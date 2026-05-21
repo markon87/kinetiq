@@ -10,11 +10,11 @@ const activities = [
 ]
 
 const typeColor = {
-  'Easy Run':     { dot: '#C6FF2E', bg: '#1C2B18', text: '#C6FF2E' },
-  'Tempo Run':    { dot: '#FF7A1A', bg: '#2A1808', text: '#FF7A1A' },
-  'Long Run':     { dot: '#33D6FF', bg: '#081828', text: '#33D6FF' },
-  'Recovery Run': { dot: '#A8B0BD', bg: '#1A1E25', text: '#A8B0BD' },
-  'Interval':     { dot: '#FF5A5F', bg: '#2A1010', text: '#FF5A5F' },
+  'Easy Run':     { dot: 'var(--accent-lime)', bg: 'var(--bg-lime-tint)', text: 'var(--accent-lime)' },
+  'Tempo Run':    { dot: 'var(--accent-orange)', bg: 'var(--bg-orange-tint)', text: 'var(--accent-orange)' },
+  'Long Run':     { dot: 'var(--accent-cyan)', bg: 'var(--bg-cyan-tint)', text: 'var(--accent-cyan)' },
+  'Recovery Run': { dot: 'var(--text-secondary)', bg: 'var(--bg-neutral-tint)', text: 'var(--text-secondary)' },
+  'Interval':     { dot: 'var(--status-danger)', bg: 'var(--bg-red-tint)', text: 'var(--status-danger)' },
 }
 
 const stats = [
@@ -29,10 +29,10 @@ export default function ActivitiesPage() {
     <div className="flex-1 overflow-y-auto p-6">
       {/* Page header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
           Activities
         </h2>
-        <p className="text-sm text-[#6F7A88] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <p className="text-sm text-[var(--text-muted)] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
           Your complete training history
         </p>
       </div>
@@ -40,33 +40,33 @@ export default function ActivitiesPage() {
       {/* Summary stats */}
       <div className="grid grid-cols-4 gap-4 mb-6">
         {stats.map(s => (
-          <div key={s.label} className="bg-[#151B23] border border-[#1E2530] rounded-xl p-4">
-            <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-2">{s.label}</div>
-            <div className="text-2xl font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
+          <div key={s.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
+            <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-2">{s.label}</div>
+            <div className="text-2xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
               {s.value}
             </div>
-            <div className="text-xs text-[#6F7A88] mt-0.5">{s.unit}</div>
+            <div className="text-xs text-[var(--text-muted)] mt-0.5">{s.unit}</div>
           </div>
         ))}
       </div>
 
       {/* Activity list */}
-      <div className="bg-[#151B23] border border-[#1E2530] rounded-xl overflow-hidden">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-5 py-3 border-b border-[#1E2530]">
+        <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-5 py-3 border-b border-[var(--border-color)]">
           {['Activity', 'Date', 'Distance', 'Pace', 'Avg HR', 'Time'].map(h => (
-            <div key={h} className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">{h}</div>
+            <div key={h} className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">{h}</div>
           ))}
         </div>
 
         {/* Rows */}
-        <div className="divide-y divide-[#1E2530]">
+        <div className="divide-y divide-[var(--border-color)]">
           {activities.map(a => {
             const style = typeColor[a.type] ?? typeColor['Easy Run']
             return (
               <div
                 key={a.id}
-                className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-5 py-4 items-center hover:bg-[#1A2030] transition-colors cursor-pointer"
+                className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-5 py-4 items-center hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
               >
                 {/* Activity name + type badge */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -77,7 +77,7 @@ export default function ActivitiesPage() {
                     {a.emoji}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold text-[#F5F7FA] truncate" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    <div className="text-sm font-semibold text-[var(--text-primary)] truncate" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                       {a.type}
                     </div>
                     <div
@@ -90,21 +90,21 @@ export default function ActivitiesPage() {
                   </div>
                 </div>
 
-                <div className="text-sm text-[#A8B0BD] whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>{a.date}</div>
+                <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>{a.date}</div>
 
-                <div className="text-sm font-semibold text-[#F5F7FA] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {a.distance} <span className="text-xs font-normal text-[#6F7A88]">km</span>
+                <div className="text-sm font-semibold text-[var(--text-primary)] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  {a.distance} <span className="text-xs font-normal text-[var(--text-muted)]">km</span>
                 </div>
 
-                <div className="text-sm font-semibold text-[#F5F7FA] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {a.pace} <span className="text-xs font-normal text-[#6F7A88]">/km</span>
+                <div className="text-sm font-semibold text-[var(--text-primary)] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  {a.pace} <span className="text-xs font-normal text-[var(--text-muted)]">/km</span>
                 </div>
 
-                <div className="text-sm text-[#A8B0BD] whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  {a.hr} <span className="text-xs text-[#6F7A88]">bpm</span>
+                <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {a.hr} <span className="text-xs text-[var(--text-muted)]">bpm</span>
                 </div>
 
-                <div className="text-sm text-[#A8B0BD] whitespace-nowrap font-mono" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap font-mono" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                   {a.duration}
                 </div>
               </div>

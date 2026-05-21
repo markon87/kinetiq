@@ -20,6 +20,30 @@
   --status-success: #7CFF6B;
   --status-warning: #FFB020;
   --status-danger:  #FF5A5F;
+
+  /* Tinted card backgrounds */
+  --bg-lime-tint:      #1C2B18;
+  --border-lime-tint:  #2A4A1A;
+  --bg-lime-med:       #3D6B0F;
+  --bg-lime-strong:    #1E3A10;
+  --bg-lime-dim:       #0F1A10;
+  --bg-orange-tint:    #2A1808;
+  --border-orange-tint:#4A2A0A;
+  --bg-cyan-tint:      #081828;
+  --border-cyan-tint:  #0A2A40;
+  --bg-red-tint:       #2A1010;
+  --bg-amber-tint:     #1E1810;
+  --border-amber-tint: #332510;
+
+  /* UI utility tones */
+  --bg-hover:          #1A2030;
+  --bg-neutral-tint:   #1A1E25;
+  --border-strong:     #2A3040;
+  --chart-grid:        #3A4A5A;
+
+  /* Additional accents */
+  --color-purple:      #A855F7;
+  --accent-lime-hover: #D4FF5A;
 }
 
 /* System preference — light */
@@ -41,6 +65,30 @@
     --status-success: #1E8C35;
     --status-warning: #B36800;
     --status-danger:  #C0222A;
+
+    /* Tinted card backgrounds */
+    --bg-lime-tint:      #EBF7D0;
+    --border-lime-tint:  #B8DF80;
+    --bg-lime-med:       #A3C43A;
+    --bg-lime-strong:    #C8E8A0;
+    --bg-lime-dim:       #F5FBEE;
+    --bg-orange-tint:    #FEF0E0;
+    --border-orange-tint:#F5C494;
+    --bg-cyan-tint:      #E0F4FA;
+    --border-cyan-tint:  #90D0E8;
+    --bg-red-tint:       #FEE8E8;
+    --bg-amber-tint:     #FFF3CD;
+    --border-amber-tint: #F5D878;
+
+    /* UI utility tones */
+    --bg-hover:          #ECEEF2;
+    --bg-neutral-tint:   #E8EAEE;
+    --border-strong:     #CCD0DA;
+    --chart-grid:        #A0A8B8;
+
+    /* Additional accents */
+    --color-purple:      #7C3AED;
+    --accent-lime-hover: #5A9200;
   }
 }
 
@@ -62,6 +110,30 @@
   --status-success: #7CFF6B;
   --status-warning: #FFB020;
   --status-danger:  #FF5A5F;
+
+  /* Tinted card backgrounds */
+  --bg-lime-tint:      #1C2B18;
+  --border-lime-tint:  #2A4A1A;
+  --bg-lime-med:       #3D6B0F;
+  --bg-lime-strong:    #1E3A10;
+  --bg-lime-dim:       #0F1A10;
+  --bg-orange-tint:    #2A1808;
+  --border-orange-tint:#4A2A0A;
+  --bg-cyan-tint:      #081828;
+  --border-cyan-tint:  #0A2A40;
+  --bg-red-tint:       #2A1010;
+  --bg-amber-tint:     #1E1810;
+  --border-amber-tint: #332510;
+
+  /* UI utility tones */
+  --bg-hover:          #1A2030;
+  --bg-neutral-tint:   #1A1E25;
+  --border-strong:     #2A3040;
+  --chart-grid:        #3A4A5A;
+
+  /* Additional accents */
+  --color-purple:      #A855F7;
+  --accent-lime-hover: #D4FF5A;
 }
 
 /* Manual override — light */
@@ -82,6 +154,30 @@
   --status-success: #1E8C35;
   --status-warning: #B36800;
   --status-danger:  #C0222A;
+
+  /* Tinted card backgrounds */
+  --bg-lime-tint:      #EBF7D0;
+  --border-lime-tint:  #B8DF80;
+  --bg-lime-med:       #A3C43A;
+  --bg-lime-strong:    #C8E8A0;
+  --bg-lime-dim:       #F5FBEE;
+  --bg-orange-tint:    #FEF0E0;
+  --border-orange-tint:#F5C494;
+  --bg-cyan-tint:      #E0F4FA;
+  --border-cyan-tint:  #90D0E8;
+  --bg-red-tint:       #FEE8E8;
+  --bg-amber-tint:     #FFF3CD;
+  --border-amber-tint: #F5D878;
+
+  /* UI utility tones */
+  --bg-hover:          #ECEEF2;
+  --bg-neutral-tint:   #E8EAEE;
+  --border-strong:     #CCD0DA;
+  --chart-grid:        #A0A8B8;
+
+  /* Additional accents */
+  --color-purple:      #7C3AED;
+  --accent-lime-hover: #5A9200;
 }
 
 /* ── Global Base ────────────────────────────────────────────────────── */

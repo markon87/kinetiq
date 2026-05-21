@@ -6,9 +6,9 @@ const overviewCards = [
     change: '+4 ms',
     caption: 'vs last week',
     note: 'Excellent',
-    noteColor: '#C6FF2E',
+    noteColor: 'var(--accent-lime)',
     sparkline: [44, 46, 43, 48, 47, 50, 51, 52],
-    color: '#C6FF2E',
+    color: 'var(--accent-lime)',
   },
   {
     label: 'Resting Heart Rate',
@@ -17,9 +17,9 @@ const overviewCards = [
     change: '−2 bpm',
     caption: 'vs last week',
     note: 'Athletic',
-    noteColor: '#C6FF2E',
+    noteColor: 'var(--accent-lime)',
     sparkline: [54, 53, 52, 51, 51, 50, 49, 48],
-    color: '#33D6FF',
+    color: 'var(--accent-cyan)',
   },
   {
     label: 'Avg Sleep',
@@ -28,9 +28,9 @@ const overviewCards = [
     change: '+0.3 hrs',
     caption: 'vs last week',
     note: 'Good',
-    noteColor: '#FFB020',
+    noteColor: 'var(--status-warning)',
     sparkline: [6.8, 7.0, 6.5, 7.2, 7.5, 7.1, 7.6, 7.4],
-    color: '#A855F7',
+    color: 'var(--color-purple)',
   },
   {
     label: 'Recovery Score',
@@ -39,9 +39,9 @@ const overviewCards = [
     change: '+6 pts',
     caption: 'vs last week',
     note: 'Good',
-    noteColor: '#C6FF2E',
+    noteColor: 'var(--accent-lime)',
     sparkline: [58, 62, 55, 68, 65, 70, 72, 74],
-    color: '#C6FF2E',
+    color: 'var(--accent-lime)',
   },
 ]
 
@@ -56,10 +56,10 @@ const sleepData = [
 ]
 
 const qualityColor = {
-  great: '#C6FF2E',
-  good:  '#FFB020',
-  fair:  '#FF7A1A',
-  poor:  '#FF5A5F',
+  great: 'var(--accent-lime)',
+  good:  'var(--status-warning)',
+  fair:  'var(--accent-orange)',
+  poor:  'var(--status-danger)',
 }
 
 const hrvHistory = [44, 46, 43, 48, 47, 46, 50, 51, 49, 52, 53, 52]
@@ -73,10 +73,10 @@ const bodyMetrics = [
 ]
 
 const injuryRisks = [
-  { area: 'Left Knee',    risk: 'Low',      pct: 18, color: '#C6FF2E' },
-  { area: 'Right Achilles', risk: 'Moderate', pct: 52, color: '#FFB020' },
-  { area: 'Lower Back',   risk: 'Low',      pct: 22, color: '#C6FF2E' },
-  { area: 'Left Hip',     risk: 'Low',      pct: 14, color: '#C6FF2E' },
+  { area: 'Left Knee',    risk: 'Low',      pct: 18, color: 'var(--accent-lime)' },
+  { area: 'Right Achilles', risk: 'Moderate', pct: 52, color: 'var(--status-warning)' },
+  { area: 'Lower Back',   risk: 'Low',      pct: 22, color: 'var(--accent-lime)' },
+  { area: 'Left Hip',     risk: 'Low',      pct: 14, color: 'var(--accent-lime)' },
 ]
 
 function Sparkline({ data, color, width = 72, height = 28 }) {
@@ -102,10 +102,10 @@ export default function HealthPage() {
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
           Health
         </h2>
-        <p className="text-sm text-[#6F7A88] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <p className="text-sm text-[var(--text-muted)] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
           Recovery, sleep, and biometric overview
         </p>
       </div>
@@ -113,19 +113,19 @@ export default function HealthPage() {
       {/* Overview cards */}
       <div className="grid grid-cols-4 gap-4">
         {overviewCards.map(c => (
-          <div key={c.label} className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-            <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-3">{c.label}</div>
+          <div key={c.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+            <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">{c.label}</div>
             <div className="flex items-end justify-between">
               <div>
-                <div className="text-3xl font-bold leading-none text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em' }}>
+                <div className="text-3xl font-bold leading-none text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em' }}>
                   {c.value}
-                  <span className="text-sm font-normal text-[#6F7A88] ml-1">{c.unit}</span>
+                  <span className="text-sm font-normal text-[var(--text-muted)] ml-1">{c.unit}</span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-2">
-                  <span className="text-xs font-semibold px-1.5 py-0.5 rounded" style={{ backgroundColor: '#1C2B18', color: '#C6FF2E' }}>
+                  <span className="text-xs font-semibold px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--bg-lime-tint)', color: 'var(--accent-lime)' }}>
                     {c.change}
                   </span>
-                  <span className="text-[10px] text-[#6F7A88]">{c.caption}</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">{c.caption}</span>
                 </div>
                 <div className="mt-1.5 text-xs font-semibold" style={{ color: c.noteColor }}>{c.note}</div>
               </div>
@@ -138,13 +138,13 @@ export default function HealthPage() {
       {/* Sleep + HRV/RHR side by side */}
       <div className="grid grid-cols-[1fr_300px] gap-4">
         {/* Sleep */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
           <div className="flex items-center justify-between mb-5">
-            <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">Sleep — Last 7 Nights</div>
-            <div className="flex items-center gap-3 text-[10px] text-[#6F7A88]">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[#C6FF2E]" />Great</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[#FFB020]" />Good</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[#FF7A1A]" />Fair</span>
+            <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Sleep — Last 7 Nights</div>
+            <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[var(--accent-lime)]" />Great</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[var(--status-warning)]" />Good</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[var(--accent-orange)]" />Fair</span>
             </div>
           </div>
           <div className="flex items-end gap-3" style={{ height: '110px' }}>
@@ -152,7 +152,7 @@ export default function HealthPage() {
               const pct = (d.duration / maxSleep) * 100
               return (
                 <div key={d.day} className="flex-1 flex flex-col items-center gap-2">
-                  <div className="text-xs font-semibold text-[#A8B0BD]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <div className="text-xs font-semibold text-[var(--text-secondary)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                     {d.duration}h
                   </div>
                   <div className="w-full flex items-end" style={{ height: '72px' }}>
@@ -161,43 +161,43 @@ export default function HealthPage() {
                       style={{ height: `${pct}%`, backgroundColor: qualityColor[d.quality], opacity: 0.85, minHeight: '4px' }}
                     />
                   </div>
-                  <div className="text-[10px] text-[#6F7A88]">{d.day}</div>
+                  <div className="text-[10px] text-[var(--text-muted)]">{d.day}</div>
                 </div>
               )
             })}
           </div>
           {/* Deep + REM breakdown */}
-          <div className="mt-4 pt-4 border-t border-[#1E2530] grid grid-cols-7 gap-3">
+          <div className="mt-4 pt-4 border-t border-[var(--border-color)] grid grid-cols-7 gap-3">
             {sleepData.map(d => (
               <div key={d.day} className="text-center">
-                <div className="text-[10px] text-[#33D6FF] font-medium">{d.deep}h</div>
-                <div className="text-[9px] text-[#6F7A88]">deep</div>
-                <div className="text-[10px] text-[#A855F7] font-medium mt-1">{d.rem}h</div>
-                <div className="text-[9px] text-[#6F7A88]">rem</div>
+                <div className="text-[10px] text-[var(--accent-cyan)] font-medium">{d.deep}h</div>
+                <div className="text-[9px] text-[var(--text-muted)]">deep</div>
+                <div className="text-[10px] text-[var(--color-purple)] font-medium mt-1">{d.rem}h</div>
+                <div className="text-[9px] text-[var(--text-muted)]">rem</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* HRV + RHR trends */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5 flex flex-col gap-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5 flex flex-col gap-5">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">HRV Trend</div>
-              <span className="text-lg font-bold text-[#C6FF2E]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>52 ms</span>
+              <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">HRV Trend</div>
+              <span className="text-lg font-bold text-[var(--accent-lime)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>52 ms</span>
             </div>
-            <Sparkline data={hrvHistory} color="#C6FF2E" width={252} height={48} />
-            <div className="flex justify-between mt-1 text-[10px] text-[#6F7A88]">
+            <Sparkline data={hrvHistory} color="var(--accent-lime)" width={252} height={48} />
+            <div className="flex justify-between mt-1 text-[10px] text-[var(--text-muted)]">
               <span>12 wks ago</span><span>Now</span>
             </div>
           </div>
-          <div className="border-t border-[#1E2530] pt-5">
+          <div className="border-t border-[var(--border-color)] pt-5">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">Resting HR Trend</div>
-              <span className="text-lg font-bold text-[#33D6FF]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>48 bpm</span>
+              <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Resting HR Trend</div>
+              <span className="text-lg font-bold text-[var(--accent-cyan)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>48 bpm</span>
             </div>
-            <Sparkline data={rhrHistory} color="#33D6FF" width={252} height={48} />
-            <div className="flex justify-between mt-1 text-[10px] text-[#6F7A88]">
+            <Sparkline data={rhrHistory} color="var(--accent-cyan)" width={252} height={48} />
+            <div className="flex justify-between mt-1 text-[10px] text-[var(--text-muted)]">
               <span>12 wks ago</span><span>Now</span>
             </div>
           </div>
@@ -207,26 +207,26 @@ export default function HealthPage() {
       {/* Body metrics + Injury risk */}
       <div className="grid grid-cols-2 gap-4">
         {/* Body metrics */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-          <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-4">Body Metrics</div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+          <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Body Metrics</div>
           <div className="space-y-4">
             {bodyMetrics.map(m => (
               <div key={m.label}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm text-[#A8B0BD]" style={{ fontFamily: "'Inter', sans-serif" }}>{m.label}</span>
+                  <span className="text-sm text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{m.label}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold" style={{ color: m.trend === 'warn' ? '#FFB020' : '#C6FF2E' }}>{m.change}</span>
-                    <span className="text-sm font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                      {m.value} <span className="text-xs font-normal text-[#6F7A88]">{m.unit}</span>
+                    <span className="text-xs font-semibold" style={{ color: m.trend === 'warn' ? 'var(--status-warning)' : 'var(--accent-lime)' }}>{m.change}</span>
+                    <span className="text-sm font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      {m.value} <span className="text-xs font-normal text-[var(--text-muted)]">{m.unit}</span>
                     </span>
                   </div>
                 </div>
-                <div className="h-1.5 rounded-full bg-[#1E2530]">
+                <div className="h-1.5 rounded-full bg-[var(--border-color)]">
                   <div
                     className="h-full rounded-full"
                     style={{
                       width: `${m.bar}%`,
-                      backgroundColor: m.trend === 'warn' ? '#FFB020' : '#C6FF2E',
+                      backgroundColor: m.trend === 'warn' ? 'var(--status-warning)' : 'var(--accent-lime)',
                       opacity: 0.7,
                     }}
                   />
@@ -237,16 +237,16 @@ export default function HealthPage() {
         </div>
 
         {/* Injury risk */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-          <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-4">Injury Risk Monitor</div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+          <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Injury Risk Monitor</div>
           <div className="space-y-4">
             {injuryRisks.map(r => (
               <div key={r.area}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm text-[#A8B0BD]" style={{ fontFamily: "'Inter', sans-serif" }}>{r.area}</span>
+                  <span className="text-sm text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{r.area}</span>
                   <span className="text-xs font-semibold" style={{ color: r.color }}>{r.risk}</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-[#1E2530]">
+                <div className="h-1.5 rounded-full bg-[var(--border-color)]">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${r.pct}%`, backgroundColor: r.color, opacity: 0.8 }}
@@ -255,9 +255,9 @@ export default function HealthPage() {
               </div>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-[#1E2530] flex items-start gap-2 p-3 rounded-lg bg-[#1E1810] border-[#332510]">
-            <span className="text-[#FF7A1A] text-xs shrink-0">⚠</span>
-            <p className="text-xs text-[#A8B0BD] leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <div className="mt-4 pt-4 border-t border-[var(--border-color)] flex items-start gap-2 p-3 rounded-lg bg-[var(--bg-amber-tint)] border-[var(--border-amber-tint)]">
+            <span className="text-[var(--accent-orange)] text-xs shrink-0">⚠</span>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
               Right Achilles showing elevated load. Consider extra warm-up and reduced intensity on next run.
             </p>
           </div>

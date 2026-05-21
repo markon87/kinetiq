@@ -22,7 +22,7 @@ export default function DashboardPage() {
       </main>
 
       {/* Right sidebar — AI + Activity */}
-      <aside className="w-80 shrink-0 overflow-y-auto p-4 border-l border-[#1E2530]">
+      <aside className="w-80 shrink-0 overflow-y-auto p-4 border-l border-[var(--border-color)]">
         <AIInsights />
         <RecentActivity />
       </aside>

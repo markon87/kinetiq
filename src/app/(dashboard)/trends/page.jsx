@@ -7,7 +7,7 @@ const trendCards = [
     direction: 'up',
     caption: 'vs last 4 weeks',
     sparkline: [5.5, 5.45, 5.38, 5.32, 5.28, 5.22, 5.18, 5.13],
-    color: '#C6FF2E',
+    color: 'var(--accent-lime)',
   },
   {
     label: 'Avg Heart Rate',
@@ -17,7 +17,7 @@ const trendCards = [
     direction: 'up',
     caption: 'lower at same pace',
     sparkline: [148, 147, 146, 145, 145, 143, 143, 142],
-    color: '#C6FF2E',
+    color: 'var(--accent-lime)',
   },
   {
     label: 'Weekly Mileage',
@@ -27,7 +27,7 @@ const trendCards = [
     direction: 'up',
     caption: 'vs last 4 weeks',
     sparkline: [44, 46, 48, 50, 51, 54, 55, 57],
-    color: '#FF7A1A',
+    color: 'var(--accent-orange)',
   },
   {
     label: 'Cadence',
@@ -37,7 +37,7 @@ const trendCards = [
     direction: 'up',
     caption: 'improving efficiency',
     sparkline: [168, 169, 170, 171, 171, 172, 173, 174],
-    color: '#33D6FF',
+    color: 'var(--accent-cyan)',
   },
 ]
 
@@ -53,11 +53,11 @@ const weeklyLoad = [
 ]
 
 const hrZones = [
-  { zone: 'Z1 Recovery',   pct: 18, range: '< 121 bpm', color: '#33D6FF' },
-  { zone: 'Z2 Aerobic',    pct: 42, range: '121–142 bpm', color: '#C6FF2E' },
-  { zone: 'Z3 Tempo',      pct: 22, range: '143–155 bpm', color: '#FFB020' },
-  { zone: 'Z4 Threshold',  pct: 13, range: '156–168 bpm', color: '#FF7A1A' },
-  { zone: 'Z5 VO₂ Max',    pct: 5,  range: '> 168 bpm',  color: '#FF5A5F' },
+  { zone: 'Z1 Recovery',   pct: 18, range: '< 121 bpm', color: 'var(--accent-cyan)' },
+  { zone: 'Z2 Aerobic',    pct: 42, range: '121–142 bpm', color: 'var(--accent-lime)' },
+  { zone: 'Z3 Tempo',      pct: 22, range: '143–155 bpm', color: 'var(--status-warning)' },
+  { zone: 'Z4 Threshold',  pct: 13, range: '156–168 bpm', color: 'var(--accent-orange)' },
+  { zone: 'Z5 VO₂ Max',    pct: 5,  range: '> 168 bpm',  color: 'var(--status-danger)' },
 ]
 
 const paceHistory = [
@@ -97,10 +97,10 @@ export default function TrendsPage() {
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
           Trends
         </h2>
-        <p className="text-sm text-[#6F7A88] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <p className="text-sm text-[var(--text-muted)] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
           8-week performance and training trends
         </p>
       </div>
@@ -108,25 +108,25 @@ export default function TrendsPage() {
       {/* Trend cards */}
       <div className="grid grid-cols-4 gap-4">
         {trendCards.map(t => (
-          <div key={t.label} className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-            <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-3">{t.label}</div>
+          <div key={t.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+            <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">{t.label}</div>
             <div className="flex items-end justify-between">
               <div>
                 <div
                   className="text-3xl font-bold leading-none"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em', color: '#F5F7FA' }}
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em', color: 'var(--text-primary)' }}
                 >
                   {t.value}
-                  <span className="text-sm font-normal text-[#6F7A88] ml-1">{t.unit}</span>
+                  <span className="text-sm font-normal text-[var(--text-muted)] ml-1">{t.unit}</span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-2">
                   <span
                     className="text-xs font-semibold px-1.5 py-0.5 rounded"
-                    style={{ backgroundColor: '#1C2B18', color: '#C6FF2E' }}
+                    style={{ backgroundColor: 'var(--bg-lime-tint)', color: 'var(--accent-lime)' }}
                   >
                     {t.change}
                   </span>
-                  <span className="text-[10px] text-[#6F7A88]">{t.caption}</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">{t.caption}</span>
                 </div>
               </div>
               <Sparkline data={t.sparkline} color={t.color} />
@@ -138,15 +138,15 @@ export default function TrendsPage() {
       {/* Weekly Load + HR Zones */}
       <div className="grid grid-cols-[1fr_340px] gap-4">
         {/* Weekly load bars */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
           <div className="flex items-center justify-between mb-5">
-            <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">Weekly Training Load</div>
-            <div className="flex items-center gap-4 text-[10px] text-[#6F7A88]">
+            <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Weekly Training Load</div>
+            <div className="flex items-center gap-4 text-[10px] text-[var(--text-muted)]">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm inline-block bg-[#C6FF2E]" />Load
+                <span className="w-2.5 h-2.5 rounded-sm inline-block bg-[var(--accent-lime)]" />Load
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm inline-block bg-[#33D6FF]" />Recovery
+                <span className="w-2.5 h-2.5 rounded-sm inline-block bg-[var(--accent-cyan)]" />Recovery
               </span>
             </div>
           </div>
@@ -160,14 +160,14 @@ export default function TrendsPage() {
                   <div className="w-full flex items-end gap-0.5" style={{ height: '80px' }}>
                     <div
                       className="flex-1 rounded-t-sm"
-                      style={{ height: `${loadPct}%`, backgroundColor: isCurrent ? '#C6FF2E' : '#1E3A10', minHeight: '3px' }}
+                      style={{ height: `${loadPct}%`, backgroundColor: isCurrent ? 'var(--accent-lime)' : 'var(--bg-lime-strong)', minHeight: '3px' }}
                     />
                     <div
                       className="flex-1 rounded-t-sm"
-                      style={{ height: `${recPct}%`, backgroundColor: isCurrent ? '#33D6FF' : '#0A2840', minHeight: '3px' }}
+                      style={{ height: `${recPct}%`, backgroundColor: isCurrent ? 'var(--accent-cyan)' : 'var(--border-cyan-tint)', minHeight: '3px' }}
                     />
                   </div>
-                  <div className="text-[10px] text-[#6F7A88] uppercase tracking-wider">{week}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">{week}</div>
                 </div>
               )
             })}
@@ -175,19 +175,19 @@ export default function TrendsPage() {
         </div>
 
         {/* HR Zones */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-          <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-4">HR Zone Distribution</div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+          <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">HR Zone Distribution</div>
           <div className="space-y-3">
             {hrZones.map(z => (
               <div key={z.zone}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-[#A8B0BD]" style={{ fontFamily: "'Inter', sans-serif" }}>{z.zone}</span>
+                  <span className="text-xs font-medium text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{z.zone}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-[#6F7A88]">{z.range}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{z.range}</span>
                     <span className="text-xs font-semibold" style={{ color: z.color }}>{z.pct}%</span>
                   </div>
                 </div>
-                <div className="h-2 rounded-full bg-[#1E2530]">
+                <div className="h-2 rounded-full bg-[var(--border-color)]">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${z.pct}%`, backgroundColor: z.color, opacity: 0.85 }}
@@ -200,31 +200,31 @@ export default function TrendsPage() {
       </div>
 
       {/* Pace history table */}
-      <div className="bg-[#151B23] border border-[#1E2530] rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#1E2530] flex items-center justify-between">
-          <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">Pace by Zone — 8 Week History</div>
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
+          <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Pace by Zone — 8 Week History</div>
           <div className="flex items-center gap-4 text-[10px]">
-            <span className="flex items-center gap-1.5 text-[#C6FF2E]"><span className="w-2 h-0.5 inline-block bg-[#C6FF2E] rounded" />Easy</span>
-            <span className="flex items-center gap-1.5 text-[#FF7A1A]"><span className="w-2 h-0.5 inline-block bg-[#FF7A1A] rounded" />Threshold</span>
-            <span className="flex items-center gap-1.5 text-[#33D6FF]"><span className="w-2 h-0.5 inline-block bg-[#33D6FF] rounded" />Race</span>
+            <span className="flex items-center gap-1.5 text-[var(--accent-lime)]"><span className="w-2 h-0.5 inline-block bg-[var(--accent-lime)] rounded" />Easy</span>
+            <span className="flex items-center gap-1.5 text-[var(--accent-orange)]"><span className="w-2 h-0.5 inline-block bg-[var(--accent-orange)] rounded" />Threshold</span>
+            <span className="flex items-center gap-1.5 text-[var(--accent-cyan)]"><span className="w-2 h-0.5 inline-block bg-[var(--accent-cyan)] rounded" />Race</span>
           </div>
         </div>
-        <div className="grid grid-cols-8 divide-x divide-[#1E2530]">
+        <div className="grid grid-cols-8 divide-x divide-[var(--border-color)]">
           {paceHistory.map((w, i) => {
             const isCurrent = i === paceHistory.length - 1
             return (
               <div
                 key={w.week}
                 className="px-3 py-4 text-center"
-                style={{ backgroundColor: isCurrent ? '#0F1A10' : 'transparent' }}
+                style={{ backgroundColor: isCurrent ? 'var(--bg-lime-dim)' : 'transparent' }}
               >
-                <div className={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${isCurrent ? 'text-[#C6FF2E]' : 'text-[#6F7A88]'}`}>
+                <div className={`text-[10px] font-semibold uppercase tracking-wider mb-3 ${isCurrent ? 'text-[var(--accent-lime)]' : 'text-[var(--text-muted)]'}`}>
                   {w.week}
                 </div>
                 <div className="space-y-2">
-                  <div className="text-xs font-semibold text-[#C6FF2E]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{w.easy}</div>
-                  <div className="text-xs font-semibold text-[#FF7A1A]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{w.threshold}</div>
-                  <div className="text-xs font-semibold text-[#33D6FF]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{w.race}</div>
+                  <div className="text-xs font-semibold text-[var(--accent-lime)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{w.easy}</div>
+                  <div className="text-xs font-semibold text-[var(--accent-orange)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{w.threshold}</div>
+                  <div className="text-xs font-semibold text-[var(--accent-cyan)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{w.race}</div>
                 </div>
               </div>
             )

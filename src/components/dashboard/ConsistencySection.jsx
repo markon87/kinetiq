@@ -11,9 +11,9 @@ const GRID = [
 ]
 
 const COLOR = {
-  high: 'bg-[#C6FF2E]',
-  med:  'bg-[#3D6B0F]',
-  low:  'bg-[#1E2530]',
+  high: 'bg-[var(--accent-lime)]',
+  med:  'bg-[var(--bg-lime-med)]',
+  low:  'bg-[var(--border-color)]',
 }
 
 const stats = [
@@ -26,14 +26,14 @@ const stats = [
 
 export default function ConsistencySection() {
   return (
-    <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
+    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
       <div className="flex gap-6">
         {/* Heatmap */}
         <div className="shrink-0">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">Consistency</span>
+            <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Consistency</span>
             <span
-              className="text-sm font-bold text-[#C6FF2E]"
+              className="text-sm font-bold text-[var(--accent-lime)]"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               85%
@@ -41,7 +41,7 @@ export default function ConsistencySection() {
           </div>
           <div className="flex gap-1 mb-1">
             {DAYS.map((d, i) => (
-              <div key={i} className="w-6 text-center text-[10px] text-[#6F7A88]">{d}</div>
+              <div key={i} className="w-6 text-center text-[10px] text-[var(--text-muted)]">{d}</div>
             ))}
           </div>
           <div className="space-y-1">
@@ -56,24 +56,24 @@ export default function ConsistencySection() {
         </div>
 
         {/* Stats */}
-        <div className="flex-1 grid grid-cols-5 gap-x-4 items-center pl-6 border-l border-[#1E2530]">
+        <div className="flex-1 grid grid-cols-5 gap-x-4 items-center pl-6 border-l border-[var(--border-color)]">
           {stats.map(s => (
             <div key={s.label}>
-              <div className="text-[10px] text-[#6F7A88] uppercase tracking-wider mb-1.5 leading-tight">
+              <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1.5 leading-tight">
                 {s.label}
               </div>
               <div
-                className="text-xl font-bold text-[#F5F7FA]"
+                className="text-xl font-bold text-[var(--text-primary)]"
                 style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}
               >
                 {s.value}
-                <span className="text-sm font-normal text-[#A8B0BD] ml-0.5">{s.unit}</span>
+                <span className="text-sm font-normal text-[var(--text-secondary)] ml-0.5">{s.unit}</span>
               </div>
               {s.change && (
-                <div className="text-xs text-[#C6FF2E] mt-0.5 font-medium">{s.change}</div>
+                <div className="text-xs text-[var(--accent-lime)] mt-0.5 font-medium">{s.change}</div>
               )}
               {s.note && (
-                <div className="text-xs text-[#A8B0BD] mt-0.5">{s.note}</div>
+                <div className="text-xs text-[var(--text-secondary)] mt-0.5">{s.note}</div>
               )}
             </div>
           ))}

@@ -11,11 +11,11 @@ const activeGoals = [
     target: '44:59',
     unit: '',
     daysLeft: 52,
-    color: '#C6FF2E',
-    bg: '#1C2B18',
-    border: '#2A4A1A',
+    color: 'var(--accent-lime)',
+    bg: 'var(--bg-lime-tint)',
+    border: 'var(--border-lime-tint)',
     status: 'On track',
-    statusColor: '#C6FF2E',
+    statusColor: 'var(--accent-lime)',
     milestones: [
       { label: 'Sub-47:00',  done: true },
       { label: 'Sub-46:00',  done: true },
@@ -33,11 +33,11 @@ const activeGoals = [
     target: '65 km',
     unit: 'avg/wk',
     daysLeft: 103,
-    color: '#33D6FF',
-    bg: '#081828',
-    border: '#0A2A40',
+    color: 'var(--accent-cyan)',
+    bg: 'var(--bg-cyan-tint)',
+    border: 'var(--border-cyan-tint)',
     status: 'On track',
-    statusColor: '#33D6FF',
+    statusColor: 'var(--accent-cyan)',
     milestones: [
       { label: '50 km/wk',   done: true },
       { label: '55 km/wk',   done: true },
@@ -55,11 +55,11 @@ const activeGoals = [
     target: '1:39:59',
     unit: '',
     daysLeft: 136,
-    color: '#FF7A1A',
-    bg: '#2A1808',
-    border: '#4A2A0A',
+    color: 'var(--accent-orange)',
+    bg: 'var(--bg-orange-tint)',
+    border: 'var(--border-orange-tint)',
     status: 'At risk',
-    statusColor: '#FF7A1A',
+    statusColor: 'var(--accent-orange)',
     milestones: [
       { label: 'Sub-1:45',   done: true },
       { label: 'Sub-1:43',   done: false },
@@ -77,11 +77,11 @@ const activeGoals = [
     target: '2,000 km',
     unit: '',
     daysLeft: 224,
-    color: '#C6FF2E',
-    bg: '#1C2B18',
-    border: '#2A4A1A',
+    color: 'var(--accent-lime)',
+    bg: 'var(--bg-lime-tint)',
+    border: 'var(--border-lime-tint)',
     status: 'Slightly behind',
-    statusColor: '#FFB020',
+    statusColor: 'var(--status-warning)',
     milestones: [
       { label: '500 km',     done: true },
       { label: '1,000 km',   done: false },
@@ -105,10 +105,10 @@ const upcomingCheckpoints = [
 ]
 
 const categoryColor = {
-  Race: '#C6FF2E',
-  Volume: '#33D6FF',
-  Annual: '#C6FF2E',
-  Habit: '#FF7A1A',
+  Race: 'var(--accent-lime)',
+  Volume: 'var(--accent-cyan)',
+  Annual: 'var(--accent-lime)',
+  Habit: 'var(--accent-orange)',
 }
 
 export default function GoalsPage() {
@@ -117,14 +117,14 @@ export default function GoalsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
+          <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
             Goals
           </h2>
-          <p className="text-sm text-[#6F7A88] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <p className="text-sm text-[var(--text-muted)] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
             Targets, milestones, and long-term progress
           </p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#C6FF2E] text-[#0B0F14] text-sm font-bold hover:bg-[#D4FF5A] transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--accent-lime)] text-[var(--bg-main)] text-sm font-bold hover:bg-[var(--accent-lime-hover)] transition-colors">
           <Plus size={14} />
           New Goal
         </button>
@@ -138,27 +138,27 @@ export default function GoalsPage() {
           { label: 'Nearest Deadline', value: '52d', sub: 'City 10K · Jul 12' },
           { label: 'On-Track Rate',    value: '75%',  sub: '3 of 4 goals' },
         ].map(s => (
-          <div key={s.label} className="bg-[#151B23] border border-[#1E2530] rounded-xl p-4">
-            <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-1">{s.label}</div>
-            <div className="text-2xl font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em' }}>{s.value}</div>
-            <div className="text-xs text-[#6F7A88] mt-0.5">{s.sub}</div>
+          <div key={s.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
+            <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-1">{s.label}</div>
+            <div className="text-2xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em' }}>{s.value}</div>
+            <div className="text-xs text-[var(--text-muted)] mt-0.5">{s.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Active goals */}
       <div>
-        <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-3">Active Goals</div>
+        <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">Active Goals</div>
         <div className="grid grid-cols-2 gap-4">
           {activeGoals.map(g => (
-            <div key={g.id} className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
+            <div key={g.id} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
               {/* Top row */}
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span
                       className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
-                      style={{ color: categoryColor[g.category] ?? '#A8B0BD', backgroundColor: '#11161D', border: `1px solid #1E2530` }}
+                      style={{ color: categoryColor[g.category] ?? 'var(--text-secondary)', backgroundColor: 'var(--bg-secondary)', border: `1px solid var(--border-color)` }}
                     >
                       {g.category}
                     </span>
@@ -169,12 +169,12 @@ export default function GoalsPage() {
                       {g.status}
                     </span>
                   </div>
-                  <div className="text-base font-bold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{g.title}</div>
-                  <div className="text-xs text-[#6F7A88] mt-0.5 flex items-center gap-1">
+                  <div className="text-base font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{g.title}</div>
+                  <div className="text-xs text-[var(--text-muted)] mt-0.5 flex items-center gap-1">
                     <Calendar size={10} />{g.detail}
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-[#6F7A88]">
+                <div className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
                   <Clock size={11} />{g.daysLeft}d left
                 </div>
               </div>
@@ -183,9 +183,9 @@ export default function GoalsPage() {
               <div className="mb-3">
                 <div className="flex justify-between text-xs mb-1.5">
                   <span className="font-semibold" style={{ color: g.color }}>{g.progress}%</span>
-                  <span className="text-[#6F7A88]">{g.current} → {g.target}</span>
+                  <span className="text-[var(--text-muted)]">{g.current} → {g.target}</span>
                 </div>
-                <div className="h-2 rounded-full bg-[#1E2530]">
+                <div className="h-2 rounded-full bg-[var(--border-color)]">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{ width: `${g.progress}%`, backgroundColor: g.color }}
@@ -199,10 +199,10 @@ export default function GoalsPage() {
                   <div key={i} className="flex items-center gap-1.5">
                     {m.done
                       ? <CheckCircle size={12} className="shrink-0" style={{ color: g.color }} />
-                      : <div className="w-3 h-3 rounded-full border-2 border-[#1E2530] shrink-0" />
+                      : <div className="w-3 h-3 rounded-full border-2 border-[var(--border-color)] shrink-0" />
                     }
-                    <span className="text-[10px]" style={{ color: m.done ? g.color : '#6F7A88' }}>{m.label}</span>
-                    {i < g.milestones.length - 1 && <ChevronRight size={10} className="text-[#1E2530]" />}
+                    <span className="text-[10px]" style={{ color: m.done ? g.color : 'var(--text-muted)' }}>{m.label}</span>
+                    {i < g.milestones.length - 1 && <ChevronRight size={10} className="text-[var(--border-color)]" />}
                   </div>
                 ))}
               </div>
@@ -214,46 +214,46 @@ export default function GoalsPage() {
       {/* Upcoming checkpoints + completed */}
       <div className="grid grid-cols-[1fr_340px] gap-4">
         {/* Upcoming checkpoints */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-          <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-4">Upcoming Checkpoints</div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+          <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Upcoming Checkpoints</div>
           <div className="space-y-3">
             {upcomingCheckpoints.map((c, i) => (
-              <div key={i} className="flex items-center gap-4 p-3.5 rounded-lg bg-[#11161D] border border-[#1E2530]">
-                <div className="w-10 h-10 rounded-xl bg-[#151B23] border border-[#1E2530] flex flex-col items-center justify-center shrink-0">
-                  <span className="text-[10px] font-bold text-[#C6FF2E]">{c.daysOut}d</span>
+              <div key={i} className="flex items-center gap-4 p-3.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)]">
+                <div className="w-10 h-10 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] flex flex-col items-center justify-center shrink-0">
+                  <span className="text-[10px] font-bold text-[var(--accent-lime)]">{c.daysOut}d</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-semibold text-[#F5F7FA]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{c.checkpoint}</div>
-                  <div className="text-[10px] text-[#6F7A88] mt-0.5">{c.goal} · {c.date}</div>
+                  <div className="text-xs font-semibold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{c.checkpoint}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5">{c.goal} · {c.date}</div>
                 </div>
-                <Target size={13} className="text-[#6F7A88] shrink-0" />
+                <Target size={13} className="text-[var(--text-muted)] shrink-0" />
               </div>
             ))}
           </div>
         </div>
 
         {/* Completed goals */}
-        <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5">
-          <div className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest mb-4">Completed in 2026</div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+          <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Completed in 2026</div>
           <div className="space-y-3">
             {completedGoals.map((g, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-[#11161D] border border-[#1E2530]">
-                <div className="w-8 h-8 rounded-full bg-[#1C2B18] border border-[#2A4A1A] flex items-center justify-center shrink-0">
-                  <g.icon size={14} className="text-[#C6FF2E]" />
+              <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)]">
+                <div className="w-8 h-8 rounded-full bg-[var(--bg-lime-tint)] border border-[var(--border-lime-tint)] flex items-center justify-center shrink-0">
+                  <g.icon size={14} className="text-[var(--accent-lime)]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-semibold text-[#F5F7FA]">{g.title}</div>
-                  <div className="text-[10px] text-[#6F7A88] mt-0.5 flex items-center gap-1">
+                  <div className="text-xs font-semibold text-[var(--text-primary)]">{g.title}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5 flex items-center gap-1">
                     <span
                       className="font-semibold"
-                      style={{ color: categoryColor[g.category] ?? '#A8B0BD' }}
+                      style={{ color: categoryColor[g.category] ?? 'var(--text-secondary)' }}
                     >
                       {g.category}
                     </span>
                     · {g.completedOn}
                   </div>
                 </div>
-                <CheckCircle size={14} className="text-[#C6FF2E] shrink-0" />
+                <CheckCircle size={14} className="text-[var(--accent-lime)] shrink-0" />
               </div>
             ))}
           </div>

@@ -49,8 +49,8 @@ const fmtPace = (v) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#151B23] border border-[#1E2530] rounded-lg px-3 py-2 text-xs space-y-1">
-      <p className="text-[#6F7A88] mb-1">{label}</p>
+    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-xs space-y-1">
+      <p className="text-[var(--text-muted)] mb-1">{label}</p>
       {payload.map(p => (
         <p key={p.dataKey} style={{ color: p.stroke }}>{p.name}: {fmtPace(p.value)}</p>
       ))}
@@ -63,16 +63,16 @@ export default function PaceDevelopmentCard() {
   const data = allData[range]
 
   return (
-    <div className="bg-[#151B23] border border-[#1E2530] rounded-xl p-5 flex flex-col">
+    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold text-[#6F7A88] uppercase tracking-widest">Pace Development</span>
-          <Info size={13} className="text-[#6F7A88]" />
+          <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Pace Development</span>
+          <Info size={13} className="text-[var(--text-muted)]" />
         </div>
         <select
           value={range}
           onChange={e => setRange(e.target.value)}
-          className="bg-[#1E2530] border border-[#2A3040] text-[#A8B0BD] text-xs rounded-lg px-2 py-1 outline-none cursor-pointer"
+          className="bg-[var(--border-color)] border border-[var(--border-strong)] text-[var(--text-secondary)] text-xs rounded-lg px-2 py-1 outline-none cursor-pointer"
         >
           {Object.keys(allData).map(k => <option key={k}>{k}</option>)}
         </select>
@@ -81,33 +81,33 @@ export default function PaceDevelopmentCard() {
       <div className="h-44 flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 28 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E2530" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
             <XAxis
               dataKey="month"
-              tick={{ fill: '#6F7A88', fontSize: 11, fontFamily: 'Inter, sans-serif' }}
+              tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'Inter, sans-serif' }}
               axisLine={false} tickLine={false}
             />
             <YAxis
               domain={[3.8, 6.5]}
               tickFormatter={fmtPace}
-              tick={{ fill: '#6F7A88', fontSize: 11, fontFamily: 'Inter, sans-serif' }}
+              tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'Inter, sans-serif' }}
               axisLine={false} tickLine={false}
             />
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
               x="Jun"
-              stroke="#3A4A5A" strokeDasharray="4 4"
-              label={{ value: 'Today', fill: '#6F7A88', fontSize: 10, dy: -6 }}
+              stroke="var(--chart-grid)" strokeDasharray="4 4"
+              label={{ value: 'Today', fill: 'var(--text-muted)', fontSize: 10, dy: -6 }}
             />
-            <Line name="Easy Pace"      type="monotone" dataKey="easy"      stroke="#C6FF2E" strokeWidth={2} dot={false} />
-            <Line name="Threshold Pace" type="monotone" dataKey="threshold" stroke="#FF7A1A" strokeWidth={2} dot={false} />
-            <Line name="Race Pace"      type="monotone" dataKey="race"      stroke="#33D6FF" strokeWidth={2} dot={false} />
+            <Line name="Easy Pace"      type="monotone" dataKey="easy"      stroke="var(--accent-lime)" strokeWidth={2} dot={false} />
+            <Line name="Threshold Pace" type="monotone" dataKey="threshold" stroke="var(--accent-orange)" strokeWidth={2} dot={false} />
+            <Line name="Race Pace"      type="monotone" dataKey="race"      stroke="var(--accent-cyan)" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="flex items-center gap-5 mt-3 text-xs text-[#6F7A88]">
-        {[['#C6FF2E','Easy Pace'],['#FF7A1A','Threshold Pace'],['#33D6FF','Race Pace']].map(([c, l]) => (
+      <div className="flex items-center gap-5 mt-3 text-xs text-[var(--text-muted)]">
+        {[['var(--accent-lime)','Easy Pace'],['var(--accent-orange)','Threshold Pace'],['var(--accent-cyan)','Race Pace']].map(([c, l]) => (
           <span key={l} className="flex items-center gap-1.5">
             <span className="inline-block w-4 h-0.5 rounded" style={{ backgroundColor: c }} />
             {l}
