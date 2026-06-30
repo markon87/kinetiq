@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.0",
@@ -26,6 +28,7 @@
     "eslint-config-next": "^16.2.9",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.6.0"
+    "globals": "^17.6.0",
+    "vitest": "^3.2.4"
   }
 }
