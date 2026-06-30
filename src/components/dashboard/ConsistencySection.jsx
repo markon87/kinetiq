@@ -24,20 +24,34 @@ const stats = [
   { label: 'Elevation Gain',  value: '620',  unit: 'm',    change: '↑ 8%',   up: true  },
 ]
 
+const legendItems = [
+  { label: 'High', colorClass: COLOR.high },
+  { label: 'Medium', colorClass: COLOR.med },
+  { label: 'Low', colorClass: COLOR.low },
+]
+
 export default function ConsistencySection() {
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+    <section className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5" aria-labelledby="consistency-heading">
       <div className="flex gap-6">
         {/* Heatmap */}
         <div className="shrink-0">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Consistency</span>
+            <h2 id="consistency-heading" className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Consistency</h2>
             <span
               className="text-sm font-bold text-[var(--accent-lime)]"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               85%
             </span>
+          </div>
+          <div className="flex items-center gap-3 mb-3" aria-label="Consistency level legend">
+            {legendItems.map(({ label, colorClass }) => (
+              <div key={label} className="inline-flex items-center gap-1.5">
+                <span className={`w-2.5 h-2.5 rounded-sm ${colorClass}`} aria-hidden="true" />
+                <span className="text-[10px] text-[var(--text-secondary)]">{label}</span>
+              </div>
+            ))}
           </div>
           <div className="flex gap-1 mb-1">
             {DAYS.map((d, i) => (
@@ -79,6 +93,6 @@ export default function ConsistencySection() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }

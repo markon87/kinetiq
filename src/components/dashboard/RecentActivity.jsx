@@ -19,15 +19,21 @@ const activities = [
 
 export default function RecentActivity() {
   return (
-    <div className="mt-6">
+    <section className="mt-6" aria-labelledby="recent-activity-heading">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Recent Activity</span>
-        <button className="text-xs text-[var(--text-secondary)] hover:text-[var(--accent-lime)] transition-colors">View all</button>
+        <h2 id="recent-activity-heading" className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Recent Activity</h2>
+        <button
+          type="button"
+          className="text-xs text-[var(--text-secondary)] hover:text-[var(--accent-lime)] transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
+          aria-label="View all recent activities"
+        >
+          View all
+        </button>
       </div>
 
       <div className="space-y-2">
         {activities.map(a => (
-          <div key={a.type + a.date} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 flex items-center gap-3">
+          <article key={a.type + a.date} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 flex items-center gap-3" aria-label={`${a.type} on ${a.date}`}>
             <div className="w-9 h-9 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] flex items-center justify-center text-base shrink-0">
               {a.emoji}
             </div>
@@ -54,9 +60,9 @@ export default function RecentActivity() {
             <div className="text-right shrink-0 pl-2 border-l border-[var(--border-color)]">
               <div className="text-xs text-[var(--text-muted)]">{a.hr}</div>
             </div>
-          </div>
+          </article>
         ))}
       </div>
-    </div>
+    </section>
   )
 }

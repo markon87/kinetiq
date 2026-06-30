@@ -3,39 +3,36 @@
 import { Bell, Settings, Sun, Moon } from 'lucide-react'
 import { dashboardData } from '../../data/mockData'
 import { useTheme } from '../../providers/ThemeProvider'
+import CircleGauge from '../ui/CircleGauge'
 
 const { user, readiness } = dashboardData
 
 function ReadinessRing({ score, label }) {
-  const r = 24
-  const circ = 2 * Math.PI * r
-  const filled = (score / 100) * circ
-
   return (
-    <div className="flex items-center gap-3">
+    <section className="flex items-center gap-3" aria-label="Today readiness summary">
       <div className="text-right">
         <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest leading-none mb-1">
-          Today's Readiness
+          Today&apos;s Readiness
         </div>
       </div>
       <div className="relative w-14 h-14">
-        <svg viewBox="0 0 56 56" className="w-full h-full -rotate-90">
-          <circle cx="28" cy="28" r={r} fill="none" stroke="var(--border-color)" strokeWidth="4" />
-          <circle
-            cx="28" cy="28" r={r} fill="none"
-            stroke="var(--accent-lime)" strokeWidth="4"
-            strokeDasharray={`${filled} ${circ}`}
-            strokeLinecap="round"
-          />
-        </svg>
+        <CircleGauge
+          value={score}
+          max={100}
+          color="var(--accent-lime)"
+          size={56}
+          strokeWidth={4}
+          className="w-full h-full -rotate-90"
+          ariaLabel={`Readiness score ${score} out of 100`}
+        />
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-base font-bold text-[var(--text-primary)] leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             {score}
           </span>
         </div>
       </div>
-      <div className="text-sm font-semibold text-[var(--accent-lime)]">{label}</div>
-    </div>
+      <div className="text-sm font-semibold text-[var(--accent-lime)]">Status: {label}</div>
+    </section>
   )
 }
 
@@ -59,17 +56,27 @@ export default function Header() {
 
         <div className="flex items-center gap-1 text-[var(--text-muted)]">
           <button
+            type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+            className="p-2 rounded-lg hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-main)]"
             aria-label="Toggle theme"
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
-          <button className="p-2 rounded-lg hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors relative">
+          <button
+            type="button"
+            className="p-2 rounded-lg hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-main)]"
+            aria-label="Open notifications"
+          >
             <Bell size={18} />
+            <span className="sr-only">1 unread notification</span>
             <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent-lime)]" />
           </button>
-          <button className="p-2 rounded-lg hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors">
+          <button
+            type="button"
+            className="p-2 rounded-lg hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-main)]"
+            aria-label="Open settings"
+          >
             <Settings size={18} />
           </button>
         </div>

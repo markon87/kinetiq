@@ -1,5 +1,6 @@
 import Sidebar from '../../components/layout/Sidebar'
 import Header from '../../components/layout/Header'
+import UploadModal from '../../components/upload/UploadModal'
 
 export default function DashboardLayout({ children }) {
   return (
@@ -9,6 +10,7 @@ export default function DashboardLayout({ children }) {
         <Header />
         {children}
       </div>
+      <UploadModal />
     </div>
   )
 }

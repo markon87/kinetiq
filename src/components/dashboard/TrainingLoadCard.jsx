@@ -1,25 +1,8 @@
 import { Info } from 'lucide-react'
 import { dashboardData } from '../../data/mockData'
+import CircleGauge from '../ui/CircleGauge'
 
 const { trainingLoad } = dashboardData
-
-function CircleGauge({ value, max, color, trackColor = 'var(--border-color)', strokeWidth = 9, size = 140 }) {
-  const r = 46
-  const circ = 2 * Math.PI * r
-  const filled = (value / max) * circ
-
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" className="-rotate-90">
-      <circle cx="50" cy="50" r={r} fill="none" stroke={trackColor} strokeWidth={strokeWidth} />
-      <circle
-        cx="50" cy="50" r={r} fill="none"
-        stroke={color} strokeWidth={strokeWidth}
-        strokeDasharray={`${filled} ${circ}`}
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
 
 export default function TrainingLoadCard() {
   return (
@@ -31,7 +14,13 @@ export default function TrainingLoadCard() {
 
       <div className="flex flex-col items-center flex-1 justify-center">
         <div className="relative">
-          <CircleGauge value={trainingLoad.value} max={trainingLoad.max} color="var(--accent-lime)" size={140} />
+          <CircleGauge
+            value={trainingLoad.value}
+            max={trainingLoad.max}
+            color="var(--accent-lime)"
+            size={140}
+            ariaLabel={`Training load ${trainingLoad.value} out of ${trainingLoad.max}`}
+          />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <span
               className="text-4xl font-bold text-[var(--text-primary)] leading-none"
@@ -45,7 +34,7 @@ export default function TrainingLoadCard() {
         </div>
 
         <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-lime-tint)] border border-[var(--border-lime-tint)] text-[var(--accent-lime)] text-xs font-semibold">
-          ✓ Within target
+          ✓ Status: Within target
         </div>
       </div>
     </div>

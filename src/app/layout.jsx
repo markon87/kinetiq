@@ -1,5 +1,19 @@
+import { Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '../providers/ThemeProvider'
+import { UploadAnalysisProvider } from '../providers/UploadAnalysisProvider'
 import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+})
 
 export const metadata = {
   title: 'Kinetiq',
@@ -9,16 +23,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+        <ThemeProvider>
+          <UploadAnalysisProvider>{children}</UploadAnalysisProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -1,31 +1,14 @@
 import { Info, AlertTriangle } from 'lucide-react'
 import { dashboardData } from '../../data/mockData'
+import CircleGauge from '../ui/CircleGauge'
 
 const { recovery } = dashboardData
 
 const metrics = [
-  { label: 'Sleep',        change: null,                                        color: 'var(--status-danger)', dir: '↓' },
-  { label: 'HR Stability', change: null,                                        color: 'var(--status-danger)', dir: '↓' },
-  { label: 'Mileage',      change: `+${recovery.mileageIncrease}%`,             color: 'var(--accent-lime)', dir: '↑' },
+  { label: 'Sleep',        change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
+  { label: 'HR Stability', change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
+  { label: 'Mileage',      change: `+${recovery.mileageIncrease}%`, color: 'var(--accent-lime)',   dir: '↑', trend: 'Up' },
 ]
-
-function CircleGauge({ percent, color, size = 120 }) {
-  const r = 42
-  const circ = 2 * Math.PI * r
-  const filled = percent * circ
-
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" className="-rotate-90">
-      <circle cx="50" cy="50" r={r} fill="none" stroke="var(--border-color)" strokeWidth="9" />
-      <circle
-        cx="50" cy="50" r={r} fill="none"
-        stroke={color} strokeWidth="9"
-        strokeDasharray={`${filled} ${circ}`}
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
 
 export default function RecoveryStatusCard() {
   return (
@@ -37,7 +20,12 @@ export default function RecoveryStatusCard() {
 
       <div className="flex items-center gap-4 flex-1">
         <div className="relative shrink-0">
-          <CircleGauge percent={recovery.gaugePercent} color="var(--accent-orange)" size={120} />
+          <CircleGauge
+            percent={recovery.gaugePercent}
+            color="var(--accent-orange)"
+            size={120}
+            ariaLabel={`Recovery status ${Math.round(recovery.gaugePercent * 100)} percent`}
+          />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <span
               className="text-base font-bold text-[var(--text-primary)] leading-tight"
@@ -50,11 +38,11 @@ export default function RecoveryStatusCard() {
         </div>
 
         <div className="flex-1 space-y-3">
-          {metrics.map(({ label, change, color, dir }) => (
+          {metrics.map(({ label, change, color, dir, trend }) => (
             <div key={label} className="flex items-center justify-between">
               <span className="text-sm text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{label}</span>
               <span className="text-sm font-semibold" style={{ color }}>
-                {dir} {change || ''}
+                {dir} {trend}{change ? ` (${change})` : ''}
               </span>
             </div>
           ))}

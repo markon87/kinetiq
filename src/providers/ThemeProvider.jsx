@@ -4,26 +4,30 @@ import { createContext, useContext, useState, useEffect } from 'react'
 
 const ThemeContext = createContext({ theme: 'dark', toggleTheme: () => {} })
 
+function getInitialTheme() {
+  if (typeof window === 'undefined') {
+    return 'dark'
+  }
+
+  const saved = localStorage.getItem('kinetiq-theme')
+  if (saved === 'dark' || saved === 'light') {
+    return saved
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('dark')
+  const [theme, setTheme] = useState(getInitialTheme)
 
   useEffect(() => {
-    const saved = localStorage.getItem('kinetiq-theme')
-    const initial =
-      saved === 'dark' || saved === 'light'
-        ? saved
-        : window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-    setTheme(initial)
-    document.documentElement.setAttribute('data-theme', initial)
-  }, [])
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('kinetiq-theme', theme)
+  }, [theme])
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
-    document.documentElement.setAttribute('data-theme', next)
-    localStorage.setItem('kinetiq-theme', next)
   }
 
   return (
