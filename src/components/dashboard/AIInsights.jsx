@@ -1,3 +1,5 @@
+'use client'
+
 import { TrendingUp, AlertCircle, Target, Footprints, ChevronRight } from 'lucide-react'
 import { dashboardData } from '../../data/mockData'
 import { useUploadAnalysis } from '../../providers/UploadAnalysisProvider'
