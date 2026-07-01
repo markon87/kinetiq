@@ -13,11 +13,18 @@ export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'c
   const isLanding = variant === 'landing'
 
   const supabase = getSupabaseBrowserClient()
+  const isSupabaseConfigured = Boolean(supabase)
 
   const handleEmailAuth = async (event) => {
     event.preventDefault()
     setError('')
     setMessage('')
+
+    if (!supabase) {
+      setError('App auth is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in deployment settings.')
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -41,6 +48,12 @@ export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'c
   const handleGoogleAuth = async () => {
     setError('')
     setMessage('')
+
+    if (!supabase) {
+      setError('App auth is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in deployment settings.')
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -151,7 +164,7 @@ export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'c
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !isSupabaseConfigured}
               className="w-full min-h-11 rounded-lg bg-[var(--accent-lime)] px-4 py-2 text-sm font-semibold text-[var(--bg-main)] transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {isLoading ? 'Please wait...' : isSignUp ? 'Create account' : 'Sign in'}
@@ -161,7 +174,7 @@ export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'c
           <button
             type="button"
             onClick={handleGoogleAuth}
-            disabled={isLoading}
+            disabled={isLoading || !isSupabaseConfigured}
             className="mt-3 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-hover)] disabled:opacity-50"
           >
             Continue with Google

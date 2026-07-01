@@ -19,6 +19,11 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata = {
   title: 'Kinetiq',
   description: 'AI-powered running intelligence',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({ children }) {

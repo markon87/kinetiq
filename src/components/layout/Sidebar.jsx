@@ -29,6 +29,11 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const handleSignOut = async () => {
     const supabase = getSupabaseBrowserClient()
+    if (!supabase) {
+      window.location.assign('/')
+      return
+    }
+
     try {
       await supabase.auth.signOut()
     } finally {
