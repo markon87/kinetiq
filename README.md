@@ -63,8 +63,60 @@ Set these in `.env.local`:
 
 - `NEXT_PUBLIC_UPLOAD_MAX_SIZE_BYTES`
 - `NEXT_PUBLIC_UPLOAD_ACCEPTED_TYPES`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (optional fallback)
+- `SUPABASE_SERVICE_ROLE_KEY`
 
 See `.env.example` for defaults.
+
+## Supabase Setup (Sprint 1)
+
+Kinetiq now includes Supabase foundation files:
+
+- `supabase/config.toml`
+- `supabase/migrations/20260701120000_initial_schema.sql`
+- `src/lib/supabase/*` (browser/server/admin clients)
+- `src/app/api/activities/route.js` (auth-aware activities endpoint)
+
+Recommended bootstrap flow:
+
+1. Install Supabase CLI (if not installed):
+
+```bash
+brew install supabase/tap/supabase
+```
+
+2. Authenticate CLI:
+
+```bash
+supabase login
+```
+
+3. Link this repo to your Supabase project:
+
+```bash
+supabase link --project-ref <your-project-ref>
+```
+
+4. Apply migrations to remote:
+
+```bash
+supabase db push
+```
+
+5. (Optional) run local Supabase stack for offline development:
+
+```bash
+supabase start
+```
+
+6. Add Supabase keys to `.env.local` from your project settings.
+
+Notes:
+
+- The activities API route requires an authenticated Supabase user session and will return `401` when unauthenticated.
+- Row Level Security is enabled on user-owned tables (`profiles`, `activities`, `uploaded_analyses`).
 
 ## Current Scope
 
