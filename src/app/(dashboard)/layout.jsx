@@ -1,23 +1,21 @@
-'use client'
+import { redirect } from 'next/navigation'
+import DashboardShell from '../../components/layout/DashboardShell'
+import { getSupabaseServerClient } from '../../lib/supabase/server'
 
-import { useState } from 'react'
-import Sidebar from '../../components/layout/Sidebar'
-import Header from '../../components/layout/Header'
-import UploadModal from '../../components/upload/UploadModal'
-import ActivityFormModal from '../../components/activities/ActivityFormModal'
+export default async function DashboardLayout({ children }) {
+  try {
+    const supabase = await getSupabaseServerClient()
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
 
-export default function DashboardLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    if (error || !user) {
+      redirect('/?redirectedFrom=/dashboard')
+    }
+  } catch {
+    redirect('/?redirectedFrom=/dashboard')
+  }
 
-  return (
-    <div className="flex h-dvh overflow-hidden bg-[var(--bg-main)] text-[var(--text-primary)]">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Header onOpenSidebar={() => setIsSidebarOpen(true)} />
-        {children}
-      </div>
-      <UploadModal />
-      <ActivityFormModal />
-    </div>
-  )
+  return <DashboardShell>{children}</DashboardShell>
 }
