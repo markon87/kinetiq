@@ -2,7 +2,7 @@
 
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ReferenceLine, ResponsiveContainer
+  Tooltip, ReferenceLine
 } from 'recharts'
 import { Info } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -62,7 +62,7 @@ export default function PaceDevelopmentCard() {
   const [range, setRange] = useState('6 Months')
   const data = allData[range]
   const chartContainerRef = useRef(null)
-  const [canRenderChart, setCanRenderChart] = useState(false)
+  const [chartSize, setChartSize] = useState({ width: 0, height: 176 })
 
   useEffect(() => {
     const el = chartContainerRef.current
@@ -70,7 +70,9 @@ export default function PaceDevelopmentCard() {
 
     const updateSizeState = () => {
       const { width, height } = el.getBoundingClientRect()
-      setCanRenderChart(width > 0 && height > 0)
+      if (width > 0 && height > 0) {
+        setChartSize({ width: Math.floor(width), height: Math.floor(height) })
+      }
     }
 
     updateSizeState()
@@ -97,9 +99,8 @@ export default function PaceDevelopmentCard() {
       </div>
 
       <div ref={chartContainerRef} className="h-44 min-h-[176px] min-w-0 flex-1">
-        {canRenderChart ? (
-          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={176}>
-          <LineChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 28 }}>
+        {chartSize.width > 0 ? (
+          <LineChart width={chartSize.width} height={chartSize.height} data={data} margin={{ top: 5, right: 5, bottom: 0, left: 28 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
             <XAxis
               dataKey="month"
@@ -122,7 +123,6 @@ export default function PaceDevelopmentCard() {
             <Line name="Threshold Pace" type="monotone" dataKey="threshold" stroke="var(--accent-orange)" strokeWidth={2} dot={false} />
             <Line name="Race Pace"      type="monotone" dataKey="race"      stroke="var(--accent-cyan)" strokeWidth={2} dot={false} />
           </LineChart>
-        </ResponsiveContainer>
         ) : null}
       </div>
 

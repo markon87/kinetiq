@@ -36,8 +36,19 @@ function ReadinessRing({ score, label }) {
   )
 }
 
+function getTimeGreeting() {
+  const hour = new Date().getHours()
+
+  if (hour >= 5 && hour < 12) return 'Good morning'
+  if (hour >= 12 && hour < 17) return 'Good afternoon'
+  if (hour >= 17 && hour < 22) return 'Good evening'
+
+  return 'Good night'
+}
+
 export default function Header({ onOpenSidebar }) {
   const { theme, toggleTheme } = useTheme()
+  const timeGreeting = getTimeGreeting()
 
   return (
     <header className="px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6 border-b border-[var(--border-color)] bg-[var(--bg-main)] shrink-0">
@@ -53,8 +64,8 @@ export default function Header({ onOpenSidebar }) {
               <PanelLeft size={18} />
             </button>
           </div>
-          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text-primary)] truncate" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
-            {user.greeting}, {user.name}.
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text-primary)] leading-tight whitespace-normal max-w-[16ch] sm:max-w-none" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
+            {timeGreeting}, {user.name}.
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>
             Your aerobic efficiency{' '}

@@ -7,9 +7,9 @@ import { ProjectedTimeCard, PaceDevelopmentCard } from '../../components/dashboa
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
+    <div className="flex flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
       {/* Main scrollable area */}
-      <main className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 min-w-0">
+      <main className="flex-1 p-3 sm:p-4 space-y-4 min-w-0 lg:overflow-y-auto">
         <ProjectedTimeCard />
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
@@ -22,7 +22,7 @@ export default function DashboardPage() {
       </main>
 
       {/* Right sidebar — AI + Activity */}
-      <aside className="w-full lg:w-80 shrink-0 overflow-y-auto p-3 sm:p-4 border-t lg:border-t-0 lg:border-l border-[var(--border-color)]">
+      <aside className="w-full p-3 sm:p-4 border-t border-[var(--border-color)] lg:w-80 lg:shrink-0 lg:overflow-y-auto lg:border-t-0 lg:border-l">
         <AIInsights />
         <RecentActivity />
       </aside>

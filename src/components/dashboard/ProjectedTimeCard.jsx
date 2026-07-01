@@ -2,7 +2,7 @@
 
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ReferenceLine, ResponsiveContainer
+  Tooltip, ReferenceLine
 } from 'recharts'
 import { Info } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function ProjectedTimeCard() {
   const chartContainerRef = useRef(null)
-  const [canRenderChart, setCanRenderChart] = useState(false)
+  const [chartSize, setChartSize] = useState({ width: 0, height: 176 })
 
   useEffect(() => {
     const el = chartContainerRef.current
@@ -42,7 +42,9 @@ export default function ProjectedTimeCard() {
 
     const updateSizeState = () => {
       const { width, height } = el.getBoundingClientRect()
-      setCanRenderChart(width > 0 && height > 0)
+      if (width > 0 && height > 0) {
+        setChartSize({ width: Math.floor(width), height: Math.floor(height) })
+      }
     }
 
     updateSizeState()
@@ -96,9 +98,8 @@ export default function ProjectedTimeCard() {
 
       {/* Chart */}
       <div ref={chartContainerRef} className="h-44 min-h-[176px] min-w-0">
-        {canRenderChart ? (
-          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={176}>
-          <AreaChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 32 }}>
+        {chartSize.width > 0 ? (
+          <AreaChart width={chartSize.width} height={chartSize.height} data={data} margin={{ top: 5, right: 5, bottom: 0, left: 32 }}>
             <defs>
               <linearGradient id="gradActual" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%"  stopColor="var(--accent-lime)" stopOpacity={0.18} />
@@ -139,7 +140,6 @@ export default function ProjectedTimeCard() {
               fill="url(#gradProjected)" dot={false} connectNulls
             />
           </AreaChart>
-        </ResponsiveContainer>
         ) : null}
       </div>
 

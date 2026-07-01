@@ -45,15 +45,16 @@ export default function Sidebar({ isOpen, onClose }) {
       >
       {/* Logo */}
       <div className="flex items-center justify-center px-4 py-4 border-b border-[var(--border-color)] md:px-2 lg:px-5 lg:justify-start">
-        <Image
-          src="/kinetiq-logo.png"
-          alt="Kinetiq logo"
-          width={112}
-          height={28}
-          className="hidden lg:block"
-          style={{ width: 112, height: 28 }}
-          priority
-        />
+        <div className="relative hidden lg:block h-7 w-28">
+          <Image
+            src="/kinetiq-logo.png"
+            alt="Kinetiq logo"
+            fill
+            sizes="112px"
+            className="object-contain"
+            priority
+          />
+        </div>
         <span className="text-base font-bold text-[var(--accent-lime)] lg:hidden">K</span>
       </div>
 
