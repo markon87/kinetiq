@@ -1,6 +1,7 @@
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '../providers/ThemeProvider'
 import { UploadAnalysisProvider } from '../providers/UploadAnalysisProvider'
+import { ActivityLogProvider } from '../providers/ActivityLogProvider'
 import './globals.css'
 
 const inter = Inter({
@@ -25,7 +26,9 @@ export default function RootLayout({ children }) {
     <html lang="en" data-theme="dark">
       <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
         <ThemeProvider>
-          <UploadAnalysisProvider>{children}</UploadAnalysisProvider>
+          <ActivityLogProvider>
+            <UploadAnalysisProvider>{children}</UploadAnalysisProvider>
+          </ActivityLogProvider>
         </ThemeProvider>
       </body>
     </html>

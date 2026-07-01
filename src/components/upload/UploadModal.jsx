@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ImagePlus, Upload, X, Loader2 } from 'lucide-react'
 import { useUploadAnalysis } from '../../providers/UploadAnalysisProvider'
+import { useActivityLog } from '../../providers/ActivityLogProvider'
 import {
   ACCEPTED_IMAGE_TYPES_ACCEPT_ATTR,
   ACCEPTED_IMAGE_TYPES_LABEL,
@@ -19,6 +20,7 @@ function formatBytes(bytes) {
 
 export default function UploadModal() {
   const { isModalOpen, isAnalyzing, analysisError, closeModal, analyzeImage } = useUploadAnalysis()
+  const { openManualFormFromAnalysis } = useActivityLog()
   const [selectedFile, setSelectedFile] = useState(null)
   const [localError, setLocalError] = useState(null)
   const inputRef = useRef(null)
@@ -62,7 +64,8 @@ export default function UploadModal() {
     if (!selectedFile || isAnalyzing) return
 
     try {
-      await analyzeImage(selectedFile)
+      const payload = await analyzeImage(selectedFile)
+      openManualFormFromAnalysis(payload)
       setSelectedFile(null)
       setLocalError(null)
     } catch {

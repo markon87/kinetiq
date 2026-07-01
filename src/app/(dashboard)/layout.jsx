@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Sidebar from '../../components/layout/Sidebar'
 import Header from '../../components/layout/Header'
 import UploadModal from '../../components/upload/UploadModal'
+import ActivityFormModal from '../../components/activities/ActivityFormModal'
 
 export default function DashboardLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -16,6 +17,7 @@ export default function DashboardLayout({ children }) {
         {children}
       </div>
       <UploadModal />
+      <ActivityFormModal />
     </div>
   )
 }
