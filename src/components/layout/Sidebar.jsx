@@ -5,10 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Activity, BarChart2, TrendingUp,
-  Heart, Lightbulb, Target, Upload, ChevronDown
+  Heart, Lightbulb, Target, Plus, ChevronDown
 } from 'lucide-react'
 import { dashboardData } from '../../data/mockData'
-import { useUploadAnalysis } from '../../providers/UploadAnalysisProvider'
+import { useActivityLog } from '../../providers/ActivityLogProvider'
 
 const { user } = dashboardData
 
@@ -24,7 +24,7 @@ const navItems = [
 
 export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname()
-  const { openModal } = useUploadAnalysis()
+  const { openManualForm } = useActivityLog()
 
   return (
     <>
@@ -81,20 +81,20 @@ export default function Sidebar({ isOpen, onClose }) {
         })}
       </nav>
 
-      {/* Upload + User */}
+      {/* New activity + User */}
       <div className="p-3 space-y-3 border-t border-[var(--border-color)]">
         <button
           type="button"
           onClick={() => {
             onClose()
-            openModal()
+            openManualForm()
           }}
-          aria-label="Upload workout screenshots"
+          aria-label="Create a new activity"
           className="w-full min-h-11 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[13px] sm:text-sm text-[var(--text-secondary)] hover:border-[var(--accent-lime)] hover:text-[var(--accent-lime)] transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)] md:justify-center md:px-2 lg:justify-start lg:px-3"
         >
           <span className="w-2 h-2 rounded-full bg-[var(--accent-lime)] group-hover:animate-pulse" />
-          <Upload size={14} />
-          <span className="md:hidden lg:inline">Upload Screenshots</span>
+          <Plus size={14} />
+          <span className="md:hidden lg:inline">New Activity</span>
         </button>
         <div className="flex items-center gap-3 px-1 md:justify-center lg:justify-start">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent-lime)] to-[var(--accent-cyan)] flex items-center justify-center text-xs font-bold text-[var(--bg-main)] shrink-0">

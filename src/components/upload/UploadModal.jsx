@@ -94,7 +94,7 @@ export default function UploadModal() {
             <h3 className="text-lg font-semibold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               Upload Workout Screenshot
             </h3>
-            <p className="mt-0.5 text-xs text-[var(--text-muted)]">Phase 1 analyzer (mocked output)</p>
+            <p className="mt-0.5 text-xs text-[var(--text-muted)]">We will prefill a new activity for you to review before saving.</p>
           </div>
           <button
             type="button"

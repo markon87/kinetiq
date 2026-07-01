@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Camera, Plus, X } from 'lucide-react'
 import { useActivityLog } from '../../providers/ActivityLogProvider'
+import { useUploadAnalysis } from '../../providers/UploadAnalysisProvider'
 
 const activityTypes = ['Easy Run', 'Tempo Run', 'Long Run', 'Recovery Run', 'Interval']
 
@@ -89,6 +90,7 @@ export default function ActivityFormModal() {
 }
 
 function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
+  const { openModal } = useUploadAnalysis()
   const [form, setForm] = useState(() => ({ ...emptyForm, ...initialValues }))
   const [error, setError] = useState(null)
 
@@ -154,14 +156,27 @@ function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
             </h3>
             <p className="mt-0.5 text-xs text-[var(--text-muted)]">Manual entry with screenshot-assisted prefill</p>
           </div>
-          <button
-            type="button"
-            onClick={closeManualForm}
-            className="min-h-11 min-w-11 rounded-lg p-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
-            aria-label="Close"
-          >
-            <X size={16} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                closeManualForm()
+                openModal()
+              }}
+              className="min-h-11 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 py-2 text-[11px] sm:text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
+            >
+              <Camera size={14} />
+              Upload Screenshot
+            </button>
+            <button
+              type="button"
+              onClick={closeManualForm}
+              className="min-h-11 min-w-11 rounded-lg p-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
+              aria-label="Close"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-5">
