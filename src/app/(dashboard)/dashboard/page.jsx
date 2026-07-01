@@ -1,9 +1,9 @@
-import TrainingLoadCard from '../../components/dashboard/TrainingLoadCard'
-import RecoveryStatusCard from '../../components/dashboard/RecoveryStatusCard'
-import ConsistencySection from '../../components/dashboard/ConsistencySection'
-import AIInsights from '../../components/dashboard/AIInsights'
-import RecentActivity from '../../components/dashboard/RecentActivity'
-import { ProjectedTimeCard, PaceDevelopmentCard } from '../../components/dashboard/Charts'
+import TrainingLoadCard from '../../../components/dashboard/TrainingLoadCard'
+import RecoveryStatusCard from '../../../components/dashboard/RecoveryStatusCard'
+import ConsistencySection from '../../../components/dashboard/ConsistencySection'
+import AIInsights from '../../../components/dashboard/AIInsights'
+import RecentActivity from '../../../components/dashboard/RecentActivity'
+import { ProjectedTimeCard, PaceDevelopmentCard } from '../../../components/dashboard/Charts'
 
 export default function DashboardPage() {
   return (

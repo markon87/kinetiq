@@ -5,15 +5,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Activity, BarChart2, TrendingUp,
-  Heart, Lightbulb, Target, Plus, ChevronDown
+  Heart, Lightbulb, Target, Plus, LogOut
 } from 'lucide-react'
 import { dashboardData } from '../../data/mockData'
 import { useActivityLog } from '../../providers/ActivityLogProvider'
+import { getSupabaseBrowserClient } from '../../lib/supabase/client'
 
 const { user } = dashboardData
 
 const navItems = [
-  { label: 'Dashboard',  href: '/',           icon: LayoutDashboard },
+  { label: 'Dashboard',  href: '/dashboard',  icon: LayoutDashboard },
   { label: 'Activities', href: '/activities', icon: Activity },
   { label: 'Progress',   href: '/progress',   icon: BarChart2 },
   { label: 'Trends',     href: '/trends',     icon: TrendingUp },
@@ -25,6 +26,15 @@ const navItems = [
 export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname()
   const { openManualForm } = useActivityLog()
+
+  const handleSignOut = async () => {
+    const supabase = getSupabaseBrowserClient()
+    try {
+      await supabase.auth.signOut()
+    } finally {
+      window.location.assign('/')
+    }
+  }
 
   return (
     <>
@@ -104,7 +114,14 @@ export default function Sidebar({ isOpen, onClose }) {
             <div className="text-sm font-semibold text-[var(--text-primary)]">{user.name}</div>
             <div className="text-xs text-[var(--accent-lime)]">{user.plan}</div>
           </div>
-          <ChevronDown size={14} className="text-[var(--text-muted)] md:hidden lg:block" />
+          <button
+            type="button"
+            onClick={handleSignOut}
+            aria-label="Sign out"
+            className="min-h-11 min-w-11 rounded-lg p-2 text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-secondary)] md:hidden lg:flex lg:items-center lg:justify-center"
+          >
+            <LogOut size={14} />
+          </button>
         </div>
       </div>
     </aside>
