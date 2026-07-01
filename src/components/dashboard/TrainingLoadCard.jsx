@@ -6,7 +6,7 @@ const { trainingLoad } = dashboardData
 
 export default function TrainingLoadCard() {
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5 flex flex-col">
+    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5 flex flex-col">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Training Load</span>
         <Info size={13} className="text-[var(--text-muted)]" />
@@ -18,12 +18,12 @@ export default function TrainingLoadCard() {
             value={trainingLoad.value}
             max={trainingLoad.max}
             color="var(--accent-lime)"
-            size={140}
+            size={120}
             ariaLabel={`Training load ${trainingLoad.value} out of ${trainingLoad.max}`}
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <span
-              className="text-4xl font-bold text-[var(--text-primary)] leading-none"
+              className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] leading-none"
               style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.03em' }}
             >
               {trainingLoad.value}
@@ -33,7 +33,7 @@ export default function TrainingLoadCard() {
           </div>
         </div>
 
-        <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-lime-tint)] border border-[var(--border-lime-tint)] text-[var(--accent-lime)] text-xs font-semibold">
+        <div className="mt-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-[var(--bg-lime-tint)] border border-[var(--border-lime-tint)] text-[var(--accent-lime)] text-[11px] sm:text-xs font-semibold">
           ✓ Status: Within target
         </div>
       </div>

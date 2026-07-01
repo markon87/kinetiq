@@ -34,7 +34,7 @@ const maxKm = Math.max(...monthlyVolume.map(m => m.km))
 
 export default function ProgressPage() {
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-5 sm:space-y-6">
       {/* Page header */}
       <div>
         <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
@@ -48,7 +48,7 @@ export default function ProgressPage() {
       {/* Personal Records */}
       <div>
         <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">Personal Records</div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           {personalRecords.map(pr => (
             <div key={pr.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
               <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">{pr.label}</div>
@@ -71,7 +71,7 @@ export default function ProgressPage() {
       </div>
 
       {/* Monthly Volume */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
         <div className="flex items-center justify-between mb-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Monthly Volume</div>
           <span className="text-xs text-[var(--text-secondary)]">Last 6 months</span>
@@ -103,11 +103,11 @@ export default function ProgressPage() {
       </div>
 
       {/* Fitness Metrics + Milestones side by side */}
-      <div className="grid grid-cols-[1fr_320px] gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-4">
         {/* Fitness Metrics */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Fitness Metrics</div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {fitnessMetrics.map(m => (
               <div key={m.label} className="p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)]">
                 <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-2 leading-tight">{m.label}</div>
@@ -125,7 +125,7 @@ export default function ProgressPage() {
         </div>
 
         {/* Milestones */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Milestones</div>
           <div className="space-y-3">
             {milestones.map(m => (

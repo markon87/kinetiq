@@ -12,23 +12,23 @@ const metrics = [
 
 export default function RecoveryStatusCard() {
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5 flex flex-col">
+    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5 flex flex-col">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Recovery Status</span>
         <Info size={13} className="text-[var(--text-muted)]" />
       </div>
 
-      <div className="flex items-center gap-4 flex-1">
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 flex-1">
         <div className="relative shrink-0">
           <CircleGauge
             percent={recovery.gaugePercent}
             color="var(--accent-orange)"
-            size={120}
+            size={108}
             ariaLabel={`Recovery status ${Math.round(recovery.gaugePercent * 100)} percent`}
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <span
-              className="text-base font-bold text-[var(--text-primary)] leading-tight"
+              className="text-sm sm:text-base font-bold text-[var(--text-primary)] leading-tight"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               {recovery.status.split(' ')[0]}
@@ -37,11 +37,11 @@ export default function RecoveryStatusCard() {
           </div>
         </div>
 
-        <div className="flex-1 space-y-3">
+        <div className="flex-1 w-full space-y-2.5 sm:space-y-3">
           {metrics.map(({ label, change, color, dir, trend }) => (
             <div key={label} className="flex items-center justify-between">
-              <span className="text-sm text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{label}</span>
-              <span className="text-sm font-semibold" style={{ color }}>
+              <span className="text-xs sm:text-sm text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{label}</span>
+              <span className="text-xs sm:text-sm font-semibold" style={{ color }}>
                 {dir} {trend}{change ? ` (${change})` : ''}
               </span>
             </div>

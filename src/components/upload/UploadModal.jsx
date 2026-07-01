@@ -97,7 +97,7 @@ export default function UploadModal() {
             type="button"
             onClick={onModalClose}
             disabled={isAnalyzing}
-            className="rounded-lg p-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
+            className="min-h-11 min-w-11 rounded-lg p-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
             aria-label="Close upload modal"
           >
             <X size={16} />
@@ -130,7 +130,7 @@ export default function UploadModal() {
                   <ImagePlus size={18} />
                 </div>
                 <p className="text-sm text-[var(--text-secondary)]">Drop image here or pick from your files</p>
-                <p className="text-xs text-[var(--text-muted)]">
+                <p className="text-[11px] sm:text-xs text-[var(--text-muted)]">
                   {ACCEPTED_IMAGE_TYPES_LABEL} up to {Math.floor(MAX_UPLOAD_SIZE_BYTES / (1024 * 1024))}MB
                 </p>
               </div>
@@ -149,7 +149,7 @@ export default function UploadModal() {
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={isAnalyzing}
-              className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
+              className="min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 py-2 text-[11px] sm:text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
             >
               Choose File
             </button>
@@ -157,7 +157,7 @@ export default function UploadModal() {
               type="button"
               onClick={onAnalyze}
               disabled={!selectedFile || isAnalyzing}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--accent-lime)] px-3 py-2 text-xs font-semibold text-[var(--bg-main)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
+              className="min-h-11 inline-flex items-center gap-1.5 rounded-lg bg-[var(--accent-lime)] px-3 py-2 text-[11px] sm:text-xs font-semibold text-[var(--bg-main)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
             >
               {isAnalyzing ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
               {isAnalyzing ? 'Analyzing...' : 'Analyze Screenshot'}

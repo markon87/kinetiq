@@ -94,7 +94,7 @@ const maxLoad = Math.max(...weeklyLoad.map(w => w.load))
 
 export default function TrendsPage() {
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-5 sm:space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
@@ -106,7 +106,7 @@ export default function TrendsPage() {
       </div>
 
       {/* Trend cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         {trendCards.map(t => (
           <div key={t.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">{t.label}</div>
@@ -136,9 +136,9 @@ export default function TrendsPage() {
       </div>
 
       {/* Weekly Load + HR Zones */}
-      <div className="grid grid-cols-[1fr_340px] gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-4">
         {/* Weekly load bars */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="flex items-center justify-between mb-5">
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Weekly Training Load</div>
             <div className="flex items-center gap-4 text-[10px] text-[var(--text-muted)]">
@@ -150,7 +150,8 @@ export default function TrendsPage() {
               </span>
             </div>
           </div>
-          <div className="flex items-end gap-2" style={{ height: '100px' }}>
+          <div className="overflow-x-auto">
+            <div className="flex min-w-[520px] items-end gap-2" style={{ height: '100px' }}>
             {weeklyLoad.map(({ week, load, recovery }, i) => {
               const loadPct = (load / maxLoad) * 100
               const recPct = (recovery / 100) * 100
@@ -171,11 +172,12 @@ export default function TrendsPage() {
                 </div>
               )
             })}
+            </div>
           </div>
         </div>
 
         {/* HR Zones */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">HR Zone Distribution</div>
           <div className="space-y-3">
             {hrZones.map(z => (
@@ -201,15 +203,16 @@ export default function TrendsPage() {
 
       {/* Pace history table */}
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between gap-3">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Pace by Zone — 8 Week History</div>
-          <div className="flex items-center gap-4 text-[10px]">
+          <div className="hidden sm:flex items-center gap-4 text-[10px]">
             <span className="flex items-center gap-1.5 text-[var(--accent-lime)]"><span className="w-2 h-0.5 inline-block bg-[var(--accent-lime)] rounded" />Easy</span>
             <span className="flex items-center gap-1.5 text-[var(--accent-orange)]"><span className="w-2 h-0.5 inline-block bg-[var(--accent-orange)] rounded" />Threshold</span>
             <span className="flex items-center gap-1.5 text-[var(--accent-cyan)]"><span className="w-2 h-0.5 inline-block bg-[var(--accent-cyan)] rounded" />Race</span>
           </div>
         </div>
-        <div className="grid grid-cols-8 divide-x divide-[var(--border-color)]">
+        <div className="overflow-x-auto">
+        <div className="grid min-w-[640px] grid-cols-8 divide-x divide-[var(--border-color)]">
           {paceHistory.map((w, i) => {
             const isCurrent = i === paceHistory.length - 1
             return (
@@ -229,6 +232,7 @@ export default function TrendsPage() {
               </div>
             )
           })}
+        </div>
         </div>
       </div>
     </div>

@@ -99,7 +99,7 @@ const maxSleep = Math.max(...sleepData.map(d => d.duration))
 
 export default function HealthPage() {
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-5 sm:space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
@@ -111,7 +111,7 @@ export default function HealthPage() {
       </div>
 
       {/* Overview cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         {overviewCards.map(c => (
           <div key={c.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">{c.label}</div>
@@ -136,9 +136,9 @@ export default function HealthPage() {
       </div>
 
       {/* Sleep + HRV/RHR side by side */}
-      <div className="grid grid-cols-[1fr_300px] gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-4">
         {/* Sleep */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="flex items-center justify-between mb-5">
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Sleep — Last 7 Nights</div>
             <div className="flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
@@ -147,7 +147,8 @@ export default function HealthPage() {
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[var(--accent-orange)]" />Fair</span>
             </div>
           </div>
-          <div className="flex items-end gap-3" style={{ height: '110px' }}>
+          <div className="overflow-x-auto">
+          <div className="flex min-w-[520px] items-end gap-3" style={{ height: '110px' }}>
             {sleepData.map(d => {
               const pct = (d.duration / maxSleep) * 100
               return (
@@ -166,8 +167,9 @@ export default function HealthPage() {
               )
             })}
           </div>
+          </div>
           {/* Deep + REM breakdown */}
-          <div className="mt-4 pt-4 border-t border-[var(--border-color)] grid grid-cols-7 gap-3">
+          <div className="mt-4 pt-4 border-t border-[var(--border-color)] grid grid-cols-4 sm:grid-cols-7 gap-3">
             {sleepData.map(d => (
               <div key={d.day} className="text-center">
                 <div className="text-[10px] text-[var(--accent-cyan)] font-medium">{d.deep}h</div>
@@ -180,13 +182,13 @@ export default function HealthPage() {
         </div>
 
         {/* HRV + RHR trends */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5 flex flex-col gap-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5 flex flex-col gap-5">
           <div>
             <div className="flex items-center justify-between mb-3">
               <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">HRV Trend</div>
               <span className="text-lg font-bold text-[var(--accent-lime)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>52 ms</span>
             </div>
-            <Sparkline data={hrvHistory} color="var(--accent-lime)" width={252} height={48} />
+            <Sparkline data={hrvHistory} color="var(--accent-lime)" width={220} height={48} />
             <div className="flex justify-between mt-1 text-[10px] text-[var(--text-muted)]">
               <span>12 wks ago</span><span>Now</span>
             </div>
@@ -196,7 +198,7 @@ export default function HealthPage() {
               <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Resting HR Trend</div>
               <span className="text-lg font-bold text-[var(--accent-cyan)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>48 bpm</span>
             </div>
-            <Sparkline data={rhrHistory} color="var(--accent-cyan)" width={252} height={48} />
+            <Sparkline data={rhrHistory} color="var(--accent-cyan)" width={220} height={48} />
             <div className="flex justify-between mt-1 text-[10px] text-[var(--text-muted)]">
               <span>12 wks ago</span><span>Now</span>
             </div>
@@ -205,9 +207,9 @@ export default function HealthPage() {
       </div>
 
       {/* Body metrics + Injury risk */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Body metrics */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Body Metrics</div>
           <div className="space-y-4">
             {bodyMetrics.map(m => (
@@ -237,7 +239,7 @@ export default function HealthPage() {
         </div>
 
         {/* Injury risk */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Injury Risk Monitor</div>
           <div className="space-y-4">
             {injuryRisks.map(r => (

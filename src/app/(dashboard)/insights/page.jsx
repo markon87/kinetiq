@@ -106,9 +106,9 @@ const priorityColor = { high: 'var(--accent-orange)', medium: 'var(--status-warn
 
 export default function InsightsPage() {
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-5 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
             AI Insights
@@ -124,7 +124,7 @@ export default function InsightsPage() {
       </div>
 
       {/* Weekly AI Analysis */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-6">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-1">Weekly AI Analysis</div>
@@ -135,7 +135,7 @@ export default function InsightsPage() {
               </span>
             </div>
           </div>
-          <div className="flex gap-1.5">
+          <div className="hidden sm:flex gap-1.5">
             {weeklyAnalysis.tags.map(t => (
               <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-secondary)]">{t}</span>
             ))}
@@ -147,11 +147,11 @@ export default function InsightsPage() {
       </div>
 
       {/* Race predictions + recent activity */}
-      <div className="grid grid-cols-[1fr_280px] gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_280px] gap-4">
         {/* Race predictions */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">AI Race Predictions</div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             {racePredictions.map(p => (
               <div key={p.distance} className="text-center p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)]">
                 <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-2">{p.distance}</div>
@@ -169,7 +169,7 @@ export default function InsightsPage() {
         </div>
 
         {/* Recent AI activity */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Recent AI Activity</div>
           <div className="space-y-3">
             {recentActivity.map((a, i) => (
@@ -192,7 +192,7 @@ export default function InsightsPage() {
       {/* Detected patterns */}
       <div>
         <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">Detected Patterns</div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {patterns.map(p => (
             <div key={p.title} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
               <div className="flex gap-3">
@@ -211,7 +211,7 @@ export default function InsightsPage() {
       </div>
 
       {/* Recommendations */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
         <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Recommendations</div>
         <div className="space-y-2">
           {recommendations.map((r, i) => (

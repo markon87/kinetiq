@@ -26,7 +26,7 @@ const stats = [
 
 export default function ActivitiesPage() {
   return (
-    <div className="flex-1 overflow-y-auto p-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6">
       {/* Page header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
@@ -38,7 +38,7 @@ export default function ActivitiesPage() {
       </div>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-6">
         {stats.map(s => (
           <div key={s.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-2">{s.label}</div>
@@ -53,7 +53,7 @@ export default function ActivitiesPage() {
       {/* Activity list */}
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-5 py-3 border-b border-[var(--border-color)]">
+        <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-4 lg:px-5 py-3 border-b border-[var(--border-color)]">
           {['Activity', 'Date', 'Distance', 'Pace', 'Avg HR', 'Time'].map(h => (
             <div key={h} className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">{h}</div>
           ))}
@@ -64,10 +64,30 @@ export default function ActivitiesPage() {
           {activities.map(a => {
             const style = typeColor[a.type] ?? typeColor['Easy Run']
             return (
-              <div
-                key={a.id}
-                className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-5 py-4 items-center hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
-              >
+              <div key={a.id} className="hover:bg-[var(--bg-hover)] transition-colors cursor-pointer">
+                <div className="md:hidden px-4 py-4 space-y-2.5">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ backgroundColor: style.bg }}>
+                      {a.emoji}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-[var(--text-primary)] truncate" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                        {a.type}
+                      </div>
+                      <div className="text-xs text-[var(--text-secondary)] mt-0.5">{a.date}</div>
+                    </div>
+                    <div className="text-sm font-semibold text-[var(--text-primary)] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                      {a.distance} km
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs text-[var(--text-secondary)]">
+                    <div>Pace: <span className="font-semibold text-[var(--text-primary)]">{a.pace}</span></div>
+                    <div>HR: <span className="font-semibold text-[var(--text-primary)]">{a.hr}</span></div>
+                    <div>Time: <span className="font-semibold text-[var(--text-primary)]">{a.duration}</span></div>
+                  </div>
+                </div>
+
+                <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 px-4 lg:px-5 py-4 items-center">
                 {/* Activity name + type badge */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div
@@ -106,6 +126,7 @@ export default function ActivitiesPage() {
 
                 <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap font-mono" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                   {a.duration}
+                </div>
                 </div>
               </div>
             )

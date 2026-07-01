@@ -113,9 +113,9 @@ const categoryColor = {
 
 export default function GoalsPage() {
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-5 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
             Goals
@@ -124,14 +124,14 @@ export default function GoalsPage() {
             Targets, milestones, and long-term progress
           </p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--accent-lime)] text-[var(--bg-main)] text-sm font-bold hover:bg-[var(--accent-lime-hover)] transition-colors">
+        <button className="w-full sm:w-auto min-h-11 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[var(--accent-lime)] text-[var(--bg-main)] text-sm font-bold hover:bg-[var(--accent-lime-hover)] transition-colors">
           <Plus size={14} />
           New Goal
         </button>
       </div>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
         {[
           { label: 'Active Goals',     value: '4',   sub: '1 at risk' },
           { label: 'Completed (2026)', value: '4',   sub: '↑ 2 vs last year' },
@@ -149,7 +149,7 @@ export default function GoalsPage() {
       {/* Active goals */}
       <div>
         <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-3">Active Goals</div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           {activeGoals.map(g => (
             <div key={g.id} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
               {/* Top row */}
@@ -212,9 +212,9 @@ export default function GoalsPage() {
       </div>
 
       {/* Upcoming checkpoints + completed */}
-      <div className="grid grid-cols-[1fr_340px] gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-4">
         {/* Upcoming checkpoints */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Upcoming Checkpoints</div>
           <div className="space-y-3">
             {upcomingCheckpoints.map((c, i) => (
@@ -233,7 +233,7 @@ export default function GoalsPage() {
         </div>
 
         {/* Completed goals */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4 sm:p-5">
           <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-4">Completed in 2026</div>
           <div className="space-y-3">
             {completedGoals.map((g, i) => (

@@ -5,7 +5,7 @@ import {
   Tooltip, ReferenceLine, ResponsiveContainer
 } from 'recharts'
 import { Info } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const allData = {
   '6 Months': [
@@ -61,6 +61,24 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function PaceDevelopmentCard() {
   const [range, setRange] = useState('6 Months')
   const data = allData[range]
+  const chartContainerRef = useRef(null)
+  const [canRenderChart, setCanRenderChart] = useState(false)
+
+  useEffect(() => {
+    const el = chartContainerRef.current
+    if (!el) return undefined
+
+    const updateSizeState = () => {
+      const { width, height } = el.getBoundingClientRect()
+      setCanRenderChart(width > 0 && height > 0)
+    }
+
+    updateSizeState()
+    const observer = new ResizeObserver(updateSizeState)
+    observer.observe(el)
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5 flex flex-col">
@@ -78,8 +96,9 @@ export default function PaceDevelopmentCard() {
         </select>
       </div>
 
-      <div className="h-44 flex-1">
-        <ResponsiveContainer width="100%" height="100%">
+      <div ref={chartContainerRef} className="h-44 min-h-[176px] min-w-0 flex-1">
+        {canRenderChart ? (
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={176}>
           <LineChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 28 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
             <XAxis
@@ -104,6 +123,7 @@ export default function PaceDevelopmentCard() {
             <Line name="Race Pace"      type="monotone" dataKey="race"      stroke="var(--accent-cyan)" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
+        ) : null}
       </div>
 
       <div className="flex items-center gap-5 mt-3 text-xs text-[var(--text-muted)]">

@@ -5,6 +5,7 @@ import {
   Tooltip, ReferenceLine, ResponsiveContainer
 } from 'recharts'
 import { Info } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { dashboardData } from '../../data/mockData'
 
 const { projected10k } = dashboardData
@@ -32,6 +33,25 @@ const CustomTooltip = ({ active, payload, label }) => {
 }
 
 export default function ProjectedTimeCard() {
+  const chartContainerRef = useRef(null)
+  const [canRenderChart, setCanRenderChart] = useState(false)
+
+  useEffect(() => {
+    const el = chartContainerRef.current
+    if (!el) return undefined
+
+    const updateSizeState = () => {
+      const { width, height } = el.getBoundingClientRect()
+      setCanRenderChart(width > 0 && height > 0)
+    }
+
+    updateSizeState()
+    const observer = new ResizeObserver(updateSizeState)
+    observer.observe(el)
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
       {/* Header row */}
@@ -75,8 +95,9 @@ export default function ProjectedTimeCard() {
       </div>
 
       {/* Chart */}
-      <div className="h-44">
-        <ResponsiveContainer width="100%" height="100%">
+      <div ref={chartContainerRef} className="h-44 min-h-[176px] min-w-0">
+        {canRenderChart ? (
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={176}>
           <AreaChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 32 }}>
             <defs>
               <linearGradient id="gradActual" x1="0" y1="0" x2="0" y2="1">
@@ -119,6 +140,7 @@ export default function ProjectedTimeCard() {
             />
           </AreaChart>
         </ResponsiveContainer>
+        ) : null}
       </div>
 
       {/* Legend */}
