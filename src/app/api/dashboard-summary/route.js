@@ -450,6 +450,81 @@ function buildConsistencyData(activities) {
   }
 }
 
+function ageBand(age) {
+  if (age < 30) return '20-29'
+  if (age < 40) return '30-39'
+  if (age < 50) return '40-49'
+  if (age < 60) return '50-59'
+  return '60+'
+}
+
+function vo2Thresholds(sex, age) {
+  const male = {
+    '20-29': [38, 43, 48, 52],
+    '30-39': [35, 40, 45, 49],
+    '40-49': [33, 38, 42, 46],
+    '50-59': [30, 35, 39, 43],
+    '60+': [28, 32, 36, 40],
+  }
+  const female = {
+    '20-29': [30, 34, 39, 44],
+    '30-39': [28, 32, 37, 41],
+    '40-49': [26, 30, 34, 39],
+    '50-59': [24, 28, 32, 36],
+    '60+': [22, 26, 30, 34],
+  }
+
+  const band = ageBand(age)
+  return (sex === 'female' ? female : male)[band]
+}
+
+function vo2Category(sex, age, vo2Value) {
+  if (!sex || !age || vo2Value == null) return 'Average'
+  const [low, below, average, above] = vo2Thresholds(sex, age)
+  if (vo2Value < low) return 'Low'
+  if (vo2Value < below) return 'Below Average'
+  if (vo2Value < average) return 'Average'
+  if (vo2Value < above) return 'Above Average'
+  return 'High'
+}
+
+function computeVo2Max(activities, profile) {
+  const age = profile?.age ? Number(profile.age) : null
+  const sex = profile?.sex || null
+  const weightKg = profile?.weight_kg ? Number(profile.weight_kg) : null
+
+  const sample = activities.find((item) => Number(item.distance_km) >= 2 && Number(item.avg_heart_rate) > 0)
+  if (!sample) {
+    return {
+      value: null,
+      category: 'Average',
+      note: 'Log activities with pace and heart rate to estimate VO2 Max.',
+    }
+  }
+
+  if (!age || !sex || !weightKg) {
+    return {
+      value: null,
+      category: 'Average',
+      note: 'Add age, sex, and weight in Profile to calculate VO2 Max.',
+    }
+  }
+
+  const speedMetersPerMin = (1000 / Number(sample.pace_seconds)) * 60
+  const vo2Submax = (0.2 * speedMetersPerMin) + 3.5
+  const estimatedHrMax = 208 - (0.7 * age)
+  const hrRatio = Math.max(1, Math.min(1.35, estimatedHrMax / Number(sample.avg_heart_rate)))
+  const sexAdjustment = sex === 'female' ? 0.97 : 1.03
+  const weightAdjustment = Math.pow(70 / weightKg, 0.06)
+  const vo2Value = Number((vo2Submax * hrRatio * sexAdjustment * weightAdjustment).toFixed(1))
+
+  return {
+    value: vo2Value,
+    category: vo2Category(sex, age, vo2Value),
+    note: `Estimated from your latest qualified run (${formatShortDate(sample.performed_at)}).`,
+  }
+}
+
 function computeLoad(activities) {
   const now = Date.now()
   const weekMs = 7 * 24 * 60 * 60 * 1000
@@ -558,10 +633,10 @@ export async function GET() {
   }
 
   const [{ data: profile }, { data: activities }, { data: latestAnalyses }] = await Promise.all([
-    supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).maybeSingle(),
+    supabase.from('profiles').select('display_name, avatar_url, age, sex, weight_kg').eq('id', user.id).maybeSingle(),
     supabase
       .from('activities')
-      .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, elevation_gain_m')
+      .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, cadence_spm, elevation_gain_m')
       .eq('user_id', user.id)
       .is('deleted_at', null)
       .order('performed_at', { ascending: false })
@@ -584,6 +659,7 @@ export async function GET() {
   const projected10k = buildProjected10kSeries(safeActivities)
   const paceDevelopment = buildPaceDevelopmentSeries(safeActivities)
   const consistency = buildConsistencyData(safeActivities)
+  const vo2max = computeVo2Max(safeActivities, profile)
 
   const insights = [...fallbackInsights()]
   const analysis = latestAnalyses?.[0]
@@ -607,6 +683,11 @@ export async function GET() {
       plan: 'Premium',
       aerobicTrend: loadData.trend === 'up' ? 'improved' : loadData.trend === 'down' ? 'flattened' : 'stable',
     },
+    profile: {
+      age: profile?.age ?? null,
+      sex: profile?.sex ?? null,
+      weightKg: profile?.weight_kg ?? null,
+    },
     readiness,
     trainingLoad: {
       value: loadData.normalized,
@@ -627,5 +708,6 @@ export async function GET() {
     projected10k,
     paceDevelopment,
     consistency,
+    vo2max,
   })
 }

@@ -1,6 +1,7 @@
 import TrainingLoadCard from '../../../components/dashboard/TrainingLoadCard'
 import RecoveryStatusCard from '../../../components/dashboard/RecoveryStatusCard'
 import ConsistencySection from '../../../components/dashboard/ConsistencySection'
+import VO2MaxCard from '../../../components/dashboard/VO2MaxCard'
 import AIInsights from '../../../components/dashboard/AIInsights'
 import RecentActivity from '../../../components/dashboard/RecentActivity'
 import { ProjectedTimeCard, PaceDevelopmentCard } from '../../../components/dashboard/Charts'
@@ -12,9 +13,10 @@ export default function DashboardPage() {
       <main className="flex-1 p-3 sm:p-4 space-y-4 min-w-0 lg:overflow-y-auto">
         <ProjectedTimeCard />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           <TrainingLoadCard />
           <RecoveryStatusCard />
+          <VO2MaxCard />
           <PaceDevelopmentCard />
         </div>
 

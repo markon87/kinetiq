@@ -59,6 +59,7 @@ function toUiActivity(row) {
     distance: Number(row.distance_km).toFixed(1),
     pace: formatPace(row.pace_seconds),
     hr: row.avg_heart_rate,
+    cadence: row.cadence_spm,
     duration: formatDuration(row.duration_seconds),
     elevation: row.elevation_gain_m,
     emoji: emojiByType[row.type] || '🏃',
@@ -104,6 +105,9 @@ function parseActivityPayload(payload) {
   const distanceKm = Number(payload.distance)
   const avgHeartRate = Number(payload.hr)
   const elevationGainM = Number(payload.elevation || 0)
+  const cadenceSpm = payload.cadence == null || payload.cadence === ''
+    ? null
+    : Number(payload.cadence)
 
   if (!payload.type || !payload.date || !paceSeconds || !durationSeconds) {
     return { error: 'Invalid activity payload.' }
@@ -113,6 +117,10 @@ function parseActivityPayload(payload) {
     return { error: 'Invalid activity metrics.' }
   }
 
+  if (cadenceSpm != null && (Number.isNaN(cadenceSpm) || cadenceSpm <= 0)) {
+    return { error: 'Cadence must be greater than 0.' }
+  }
+
   return {
     values: {
       type: payload.type,
@@ -120,6 +128,7 @@ function parseActivityPayload(payload) {
       distance_km: distanceKm,
       pace_seconds: paceSeconds,
       avg_heart_rate: avgHeartRate,
+      cadence_spm: cadenceSpm,
       duration_seconds: durationSeconds,
       elevation_gain_m: elevationGainM,
     },
@@ -136,7 +145,7 @@ export async function GET(request) {
 
   const { data, error } = await supabase
     .from('activities')
-    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, duration_seconds, elevation_gain_m')
+    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, cadence_spm, duration_seconds, elevation_gain_m')
     .is('deleted_at', null)
     .order('performed_at', { ascending: false })
     .limit(Number.isNaN(limit) ? 50 : Math.min(limit, 200))
@@ -170,7 +179,7 @@ export async function POST(request) {
       ...parsed.values,
       source: payload.source || 'manual',
     })
-    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, duration_seconds, elevation_gain_m')
+    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, cadence_spm, duration_seconds, elevation_gain_m')
     .single()
 
   if (error) {
@@ -202,7 +211,7 @@ export async function PATCH(request) {
     .eq('id', payload.id)
     .eq('user_id', user.id)
     .is('deleted_at', null)
-    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, duration_seconds, elevation_gain_m')
+    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, cadence_spm, duration_seconds, elevation_gain_m')
     .maybeSingle()
 
   if (error) {

@@ -70,8 +70,8 @@ export default function ActivitiesPage() {
       {/* Activity list */}
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto] gap-4 px-4 lg:px-5 py-3 border-b border-[var(--border-color)]">
-          {['Activity', 'Date', 'Distance', 'Pace', 'Avg HR', 'Time', 'Actions'].map(h => (
+        <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto_auto] gap-4 px-4 lg:px-5 py-3 border-b border-[var(--border-color)]">
+          {['Activity', 'Date', 'Distance', 'Pace', 'Avg HR', 'Cadence', 'Time', 'Actions'].map(h => (
             <div key={h} className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">{h}</div>
           ))}
         </div>
@@ -97,9 +97,10 @@ export default function ActivitiesPage() {
                       {a.distance} km
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-xs text-[var(--text-secondary)]">
+                  <div className="grid grid-cols-2 gap-2 text-xs text-[var(--text-secondary)] sm:grid-cols-4">
                     <div>Pace: <span className="font-semibold text-[var(--text-primary)]">{a.pace}</span></div>
                     <div>HR: <span className="font-semibold text-[var(--text-primary)]">{a.hr}</span></div>
+                    <div>Cad: <span className="font-semibold text-[var(--text-primary)]">{a.cadence || '—'}</span></div>
                     <div>Time: <span className="font-semibold text-[var(--text-primary)]">{a.duration}</span></div>
                   </div>
                   <div className="flex items-center justify-end gap-2">
@@ -122,7 +123,7 @@ export default function ActivitiesPage() {
                   </div>
                 </div>
 
-                <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto] gap-4 px-4 lg:px-5 py-4 items-center">
+                <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto_auto] gap-4 px-4 lg:px-5 py-4 items-center">
                 {/* Activity name + type badge */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div
@@ -157,6 +158,16 @@ export default function ActivitiesPage() {
 
                 <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>
                   {a.hr} <span className="text-xs text-[var(--text-muted)]">bpm</span>
+                </div>
+
+                <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {a.cadence ? (
+                    <>
+                      {a.cadence} <span className="text-xs text-[var(--text-muted)]">spm</span>
+                    </>
+                  ) : (
+                    <span className="text-xs text-[var(--text-muted)]">—</span>
+                  )}
                 </div>
 
                 <div className="text-sm text-[var(--text-secondary)] whitespace-nowrap font-mono" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>

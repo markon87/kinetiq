@@ -87,6 +87,7 @@ export function ActivityLogProvider({ children }) {
       distance: String(activity.distance),
       pace: String(activity.pace),
       hr: String(activity.hr),
+      cadence: activity.cadence ? String(activity.cadence) : '',
       duration: String(activity.duration),
       elevation: String(activity.elevation || 0),
     })
@@ -103,6 +104,7 @@ export function ActivityLogProvider({ children }) {
       distance: metrics.distanceKm ? String(metrics.distanceKm) : '',
       pace: paceRaw,
       hr: metrics.avgHeartRate ? String(metrics.avgHeartRate) : '',
+      cadence: metrics.cadenceSpm ? String(metrics.cadenceSpm) : '',
       duration: metrics.duration ? String(metrics.duration).replace(/^00:/, '') : '',
       elevation: metrics.elevationGainM ? String(metrics.elevationGainM) : '',
     })
@@ -130,6 +132,7 @@ export function ActivityLogProvider({ children }) {
         distance: activityForm.distance,
         pace: activityForm.pace,
         hr: activityForm.hr,
+        cadence: activityForm.cadence,
         duration: activityForm.duration,
         elevation: activityForm.elevation,
       }),

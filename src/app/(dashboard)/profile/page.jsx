@@ -9,6 +9,12 @@ export default function ProfilePage() {
   const { dashboardData, refreshDashboardData } = useDashboardData()
   const [nicknameDraft, setNicknameDraft] = useState('')
   const [nicknameTouched, setNicknameTouched] = useState(false)
+  const [ageDraft, setAgeDraft] = useState('')
+  const [ageTouched, setAgeTouched] = useState(false)
+  const [sexDraft, setSexDraft] = useState('')
+  const [sexTouched, setSexTouched] = useState(false)
+  const [weightDraft, setWeightDraft] = useState('')
+  const [weightTouched, setWeightTouched] = useState(false)
   const [persistedAvatarUrl, setPersistedAvatarUrl] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(null)
@@ -17,6 +23,9 @@ export default function ProfilePage() {
   const [error, setError] = useState('')
 
   const effectiveNickname = nicknameTouched ? nicknameDraft : (dashboardData.user.name || '')
+  const effectiveAge = ageTouched ? ageDraft : (dashboardData.profile?.age != null ? String(dashboardData.profile.age) : '')
+  const effectiveSex = sexTouched ? sexDraft : (dashboardData.profile?.sex || '')
+  const effectiveWeight = weightTouched ? weightDraft : (dashboardData.profile?.weightKg != null ? String(dashboardData.profile.weightKg) : '')
   const effectiveAvatarUrl = persistedAvatarUrl ?? dashboardData.user.avatarUrl ?? null
 
   const avatarPreview = useMemo(() => previewUrl || effectiveAvatarUrl, [previewUrl, effectiveAvatarUrl])
@@ -52,6 +61,9 @@ export default function ProfilePage() {
     try {
       const formData = new FormData()
       formData.append('nickname', trimmed)
+      formData.append('age', effectiveAge)
+      formData.append('sex', effectiveSex)
+      formData.append('weightKg', effectiveWeight)
       if (selectedFile) {
         formData.append('image', selectedFile)
       }
@@ -71,6 +83,12 @@ export default function ProfilePage() {
       setPersistedAvatarUrl(payload.avatarUrl)
       setNicknameDraft(payload.nickname)
       setNicknameTouched(false)
+      setAgeDraft(payload.age != null ? String(payload.age) : '')
+      setAgeTouched(false)
+      setSexDraft(payload.sex || '')
+      setSexTouched(false)
+      setWeightDraft(payload.weightKg != null ? String(payload.weightKg) : '')
+      setWeightTouched(false)
       setSelectedFile(null)
       setPreviewUrl(null)
       setMessage('Profile updated successfully.')
@@ -135,6 +153,54 @@ export default function ProfilePage() {
           />
           <span className="mt-1 block text-[10px] text-[var(--text-muted)]">This name appears in the greeting message.</span>
         </label>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label className="block text-xs text-[var(--text-muted)]">
+            Age
+            <input
+              type="number"
+              min="13"
+              max="100"
+              value={effectiveAge}
+              onChange={(event) => {
+                setAgeTouched(true)
+                setAgeDraft(event.target.value)
+              }}
+              className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
+            />
+          </label>
+
+          <label className="block text-xs text-[var(--text-muted)]">
+            Sex
+            <select
+              value={effectiveSex}
+              onChange={(event) => {
+                setSexTouched(true)
+                setSexDraft(event.target.value)
+              }}
+              className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
+            >
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </label>
+
+          <label className="block text-xs text-[var(--text-muted)]">
+            Weight (kg)
+            <input
+              type="number"
+              min="1"
+              step="0.1"
+              value={effectiveWeight}
+              onChange={(event) => {
+                setWeightTouched(true)
+                setWeightDraft(event.target.value)
+              }}
+              className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
+            />
+          </label>
+        </div>
 
         {message ? <p className="text-xs text-[var(--accent-lime)]">{message}</p> : null}
         {error ? <p className="text-xs text-[var(--status-danger)]">{error}</p> : null}

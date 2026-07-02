@@ -18,6 +18,33 @@ function parseNickname(value) {
   return { nickname }
 }
 
+function parseOptionalAge(value) {
+  if (value == null || String(value).trim() === '') return { age: null }
+  const age = Number.parseInt(String(value), 10)
+  if (Number.isNaN(age) || age < 13 || age > 100) {
+    return { error: 'Age must be between 13 and 100.' }
+  }
+  return { age }
+}
+
+function parseOptionalSex(value) {
+  if (value == null || String(value).trim() === '') return { sex: null }
+  const sex = String(value).trim().toLowerCase()
+  if (sex !== 'male' && sex !== 'female') {
+    return { error: 'Sex must be male or female.' }
+  }
+  return { sex }
+}
+
+function parseOptionalWeight(value) {
+  if (value == null || String(value).trim() === '') return { weightKg: null }
+  const weightKg = Number.parseFloat(String(value))
+  if (Number.isNaN(weightKg) || weightKg <= 0 || weightKg > 300) {
+    return { error: 'Weight must be between 1 and 300 kg.' }
+  }
+  return { weightKg: Number(weightKg.toFixed(1)) }
+}
+
 async function getAuthedUser() {
   const supabase = await getSupabaseServerClient()
   const {
@@ -79,7 +106,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('display_name, avatar_url')
+    .select('display_name, avatar_url, age, sex, weight_kg')
     .eq('id', user.id)
     .maybeSingle()
 
@@ -90,6 +117,9 @@ export async function GET() {
   return NextResponse.json({
     nickname: data?.display_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Athlete',
     avatarUrl: data?.avatar_url || null,
+    age: data?.age ?? null,
+    sex: data?.sex ?? null,
+    weightKg: data?.weight_kg ?? null,
   })
 }
 
@@ -101,6 +131,9 @@ export async function PATCH(request) {
 
   const formData = await request.formData()
   const nicknameInput = formData.get('nickname')
+  const ageInput = formData.get('age')
+  const sexInput = formData.get('sex')
+  const weightInput = formData.get('weightKg')
   const image = formData.get('image')
 
   const update = {}
@@ -113,6 +146,30 @@ export async function PATCH(request) {
     if (parsed?.nickname) {
       update.display_name = parsed.nickname
     }
+  }
+
+  if (ageInput != null) {
+    const parsedAge = parseOptionalAge(ageInput)
+    if (parsedAge.error) {
+      return NextResponse.json({ error: parsedAge.error }, { status: 400 })
+    }
+    update.age = parsedAge.age
+  }
+
+  if (sexInput != null) {
+    const parsedSex = parseOptionalSex(sexInput)
+    if (parsedSex.error) {
+      return NextResponse.json({ error: parsedSex.error }, { status: 400 })
+    }
+    update.sex = parsedSex.sex
+  }
+
+  if (weightInput != null) {
+    const parsedWeight = parseOptionalWeight(weightInput)
+    if (parsedWeight.error) {
+      return NextResponse.json({ error: parsedWeight.error }, { status: 400 })
+    }
+    update.weight_kg = parsedWeight.weightKg
   }
 
   if (image && image.size > 0) {
@@ -137,7 +194,7 @@ export async function PATCH(request) {
     .from('profiles')
     .update(update)
     .eq('id', user.id)
-    .select('display_name, avatar_url')
+    .select('display_name, avatar_url, age, sex, weight_kg')
     .single()
 
   if (error) {
@@ -147,5 +204,8 @@ export async function PATCH(request) {
   return NextResponse.json({
     nickname: data.display_name,
     avatarUrl: data.avatar_url || null,
+    age: data.age ?? null,
+    sex: data.sex ?? null,
+    weightKg: data.weight_kg ?? null,
   })
 }

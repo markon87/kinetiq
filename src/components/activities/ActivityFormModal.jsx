@@ -13,6 +13,7 @@ const emptyForm = {
   distance: '',
   pace: '',
   hr: '',
+  cadence: '',
   duration: '',
   elevation: '',
 }
@@ -125,6 +126,11 @@ function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
 
     if (Number(form.hr) <= 0) {
       setError('Average heart rate must be greater than 0.')
+      return
+    }
+
+    if (form.cadence && Number(form.cadence) <= 0) {
+      setError('Cadence must be greater than 0 if provided.')
       return
     }
 
@@ -245,6 +251,17 @@ function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
               min="0"
               value={form.hr}
               onChange={(e) => onChange('hr', e.target.value)}
+              className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
+            />
+          </label>
+
+          <label className="text-xs text-[var(--text-muted)]">
+            Cadence (spm)
+            <input
+              type="number"
+              min="0"
+              value={form.cadence}
+              onChange={(e) => onChange('cadence', e.target.value)}
               className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
             />
           </label>

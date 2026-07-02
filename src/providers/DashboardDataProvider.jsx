@@ -10,6 +10,11 @@ const defaultDashboardData = {
     plan: 'Premium',
     aerobicTrend: 'stable',
   },
+  profile: {
+    age: null,
+    sex: null,
+    weightKg: null,
+  },
   readiness: {
     score: 78,
     label: 'Good',
@@ -88,6 +93,11 @@ const defaultDashboardData = {
         { month: 'Sep', easy: 5.0, threshold: 4.6, race: 4.0 },
       ],
     },
+  },
+  vo2max: {
+    value: null,
+    category: 'Average',
+    note: 'Add age, sex, weight, and more activities to estimate VO2 Max.',
   },
   consistency: {
     percentage: 85,
