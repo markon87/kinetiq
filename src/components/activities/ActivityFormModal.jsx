@@ -92,13 +92,15 @@ export default function ActivityFormModal() {
 function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
   const { openModal } = useUploadAnalysis()
   const [form, setForm] = useState(() => ({ ...emptyForm, ...initialValues }))
+  const isEditing = Boolean(form.id)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   const onChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault()
 
     if (!form.type || !form.date || !form.distance || !form.pace || !form.hr || !form.duration) {
@@ -132,8 +134,15 @@ function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
     }
 
     setError(null)
+    setIsSubmitting(true)
 
-    saveActivity(form)
+    try {
+      await saveActivity(form)
+    } catch (saveError) {
+      setError(saveError.message || 'Failed to save activity.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -152,7 +161,7 @@ function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
         <div className="flex items-center justify-between border-b border-[var(--border-color)] px-5 py-4">
           <div>
             <h3 className="text-lg font-semibold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Log Activity
+              {isEditing ? 'Edit Activity' : 'Log Activity'}
             </h3>
             <p className="mt-0.5 text-xs text-[var(--text-muted)]">Manual entry with screenshot-assisted prefill</p>
           </div>
@@ -270,10 +279,11 @@ function ActivityFormDialog({ initialValues, closeManualForm, saveActivity }) {
           <div className="text-xs text-[var(--status-danger)]">{error || ''}</div>
           <button
             type="submit"
+            disabled={isSubmitting}
             className="min-h-11 inline-flex items-center gap-2 rounded-lg bg-[var(--accent-lime)] px-3 py-2 text-xs font-semibold text-[var(--bg-main)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
           >
             <Plus size={14} />
-            Save Activity
+            {isSubmitting ? 'Saving...' : isEditing ? 'Save Changes' : 'Save Activity'}
           </button>
         </div>
       </form>

@@ -1,109 +1,95 @@
 'use client'
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-const ACTIVITY_STORAGE_KEY = 'kinetiq-activities-v1'
-
-const initialActivities = [
-  { id: 1, type: 'Easy Run', date: 'May 21, 2026', distance: '10.2', pace: '5:24', hr: 138, duration: '55:05', elevation: 42, emoji: '🏃' },
-  { id: 2, type: 'Tempo Run', date: 'May 19, 2026', distance: '8.1', pace: '4:28', hr: 152, duration: '36:12', elevation: 85, emoji: '⚡' },
-  { id: 3, type: 'Long Run', date: 'May 17, 2026', distance: '18.2', pace: '5:38', hr: 141, duration: '1:42:31', elevation: 210, emoji: '🏔' },
-  { id: 4, type: 'Recovery Run', date: 'May 15, 2026', distance: '6.4', pace: '6:02', hr: 128, duration: '38:33', elevation: 18, emoji: '🌿' },
-  { id: 5, type: 'Interval', date: 'May 13, 2026', distance: '9.5', pace: '4:12', hr: 168, duration: '39:54', elevation: 55, emoji: '🔥' },
-  { id: 6, type: 'Easy Run', date: 'May 11, 2026', distance: '11.0', pace: '5:29', hr: 136, duration: '1:00:19', elevation: 63, emoji: '🏃' },
-  { id: 7, type: 'Tempo Run', date: 'May 9, 2026', distance: '7.8', pace: '4:33', hr: 155, duration: '35:17', elevation: 72, emoji: '⚡' },
-  { id: 8, type: 'Long Run', date: 'May 7, 2026', distance: '16.5', pace: '5:41', hr: 143, duration: '1:33:47', elevation: 185, emoji: '🏔' },
+const defaultStats = [
+  { label: 'Total Runs', value: '0', unit: 'logged' },
+  { label: 'Total Distance', value: '0.0', unit: 'km' },
+  { label: 'Total Time', value: '0h 0m', unit: 'total' },
+  { label: 'Avg Pace', value: '0:00', unit: '/km' },
 ]
 
-const typeToEmoji = {
-  'Easy Run': '🏃',
-  'Tempo Run': '⚡',
-  'Long Run': '🏔',
-  'Recovery Run': '🌿',
-  Interval: '🔥',
-}
-
-function formatNumber(num, fractionDigits = 1) {
-  return Number(num).toFixed(fractionDigits)
-}
-
-function parseDurationToSeconds(value) {
-  if (!value) return 0
-  const parts = String(value).split(':').map((v) => Number.parseInt(v, 10))
-
-  if (parts.some((p) => Number.isNaN(p))) return 0
-  if (parts.length === 2) {
-    return parts[0] * 60 + parts[1]
-  }
-  if (parts.length === 3) {
-    return parts[0] * 3600 + parts[1] * 60 + parts[2]
-  }
-  return 0
-}
-
-function formatTotalDuration(seconds) {
-  const totalHours = Math.floor(seconds / 3600)
-  const totalMinutes = Math.round((seconds % 3600) / 60)
-  return `${totalHours}h ${totalMinutes}m`
-}
-
-function parsePaceToSeconds(value) {
-  if (!value) return 0
-  const cleaned = String(value).replace('/km', '').trim()
-  const [mins, secs] = cleaned.split(':').map((v) => Number.parseInt(v, 10))
-  if (Number.isNaN(mins) || Number.isNaN(secs)) return 0
-  return mins * 60 + secs
-}
-
-function formatPaceFromSeconds(seconds) {
-  if (!seconds) return '0:00'
-  const mins = Math.floor(seconds / 60)
-  const secs = String(seconds % 60).padStart(2, '0')
-  return `${mins}:${secs}`
-}
-
-function getStoredActivities() {
-  if (typeof window === 'undefined') {
-    return initialActivities
+function toDateTimeLocal(isoDateString) {
+  const parsed = new Date(isoDateString)
+  if (Number.isNaN(parsed.getTime())) {
+    return new Date().toISOString().slice(0, 16)
   }
 
-  const raw = localStorage.getItem(ACTIVITY_STORAGE_KEY)
-  if (!raw) {
-    return initialActivities
-  }
-
-  try {
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) && parsed.length ? parsed : initialActivities
-  } catch {
-    localStorage.removeItem(ACTIVITY_STORAGE_KEY)
-    return initialActivities
-  }
+  const local = new Date(parsed.getTime() - (parsed.getTimezoneOffset() * 60000))
+  return local.toISOString().slice(0, 16)
 }
 
 const ActivityLogContext = createContext({
   activities: [],
-  stats: [],
+  stats: defaultStats,
+  isLoading: false,
   isFormOpen: false,
   formInitialValues: null,
   openManualForm: () => {},
+  openEditForm: () => {},
   openManualFormFromAnalysis: () => {},
   closeManualForm: () => {},
   saveActivity: () => {},
+  deleteActivity: () => {},
 })
 
 export function ActivityLogProvider({ children }) {
-  const [activities, setActivities] = useState(getStoredActivities)
+  const [activities, setActivities] = useState([])
+  const [stats, setStats] = useState(defaultStats)
+  const [isLoading, setIsLoading] = useState(true)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [formInitialValues, setFormInitialValues] = useState(null)
 
-  const persistActivities = useCallback((nextActivities) => {
-    setActivities(nextActivities)
-    localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(nextActivities))
+  const loadActivities = useCallback(async () => {
+    try {
+      const response = await fetch('/api/activities?limit=200', {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+      })
+
+      if (response.status === 401) {
+        setActivities([])
+        setStats(defaultStats)
+        return
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch activities.')
+      }
+
+      const payload = await response.json()
+      setActivities(payload.activities || [])
+      setStats(payload.stats || defaultStats)
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
+
+  useEffect(() => {
+    loadActivities().catch(() => {
+      setActivities([])
+      setStats(defaultStats)
+      setIsLoading(false)
+    })
+  }, [loadActivities])
 
   const openManualForm = useCallback((prefill = null) => {
     setFormInitialValues(prefill)
+    setIsFormOpen(true)
+  }, [])
+
+  const openEditForm = useCallback((activity) => {
+    setFormInitialValues({
+      id: activity.id,
+      type: activity.type,
+      date: toDateTimeLocal(activity.performedAt),
+      distance: String(activity.distance),
+      pace: String(activity.pace),
+      hr: String(activity.hr),
+      duration: String(activity.duration),
+      elevation: String(activity.elevation || 0),
+    })
     setIsFormOpen(true)
   }, [])
 
@@ -128,57 +114,64 @@ export function ActivityLogProvider({ children }) {
     setFormInitialValues(null)
   }, [])
 
-  const saveActivity = useCallback((activityForm) => {
-    const dateLabel = new Date(activityForm.date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+  const saveActivity = useCallback(async (activityForm) => {
+    setIsLoading(true)
+    const isEditing = Boolean(activityForm.id)
+    const response = await fetch('/api/activities', {
+      method: isEditing ? 'PATCH' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        id: activityForm.id,
+        type: activityForm.type,
+        date: activityForm.date,
+        distance: activityForm.distance,
+        pace: activityForm.pace,
+        hr: activityForm.hr,
+        duration: activityForm.duration,
+        elevation: activityForm.elevation,
+      }),
     })
 
-    const newActivity = {
-      id: Date.now(),
-      type: activityForm.type,
-      date: dateLabel,
-      distance: activityForm.distance,
-      pace: activityForm.pace,
-      hr: Number(activityForm.hr),
-      duration: activityForm.duration,
-      elevation: Number(activityForm.elevation || 0),
-      emoji: typeToEmoji[activityForm.type] || '🏃',
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: 'Failed to save activity.' }))
+      throw new Error(payload.error || 'Failed to save activity.')
     }
 
-    const nextActivities = [newActivity, ...activities]
-    persistActivities(nextActivities)
+    await loadActivities()
     closeManualForm()
-  }, [activities, closeManualForm, persistActivities])
+  }, [closeManualForm, loadActivities])
 
-  const stats = useMemo(() => {
-    const totalRuns = activities.length
-    const totalDistance = activities.reduce((acc, item) => acc + Number.parseFloat(item.distance || 0), 0)
-    const totalDuration = activities.reduce((acc, item) => acc + parseDurationToSeconds(item.duration), 0)
-    const avgPaceSeconds =
-      totalRuns > 0
-        ? Math.round(activities.reduce((acc, item) => acc + parsePaceToSeconds(item.pace), 0) / totalRuns)
-        : 0
+  const deleteActivity = useCallback(async (activityId) => {
+    setIsLoading(true)
+    const response = await fetch(`/api/activities?id=${encodeURIComponent(activityId)}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
 
-    return [
-      { label: 'Total Runs', value: String(totalRuns), unit: 'logged' },
-      { label: 'Total Distance', value: formatNumber(totalDistance), unit: 'km' },
-      { label: 'Total Time', value: formatTotalDuration(totalDuration), unit: 'total' },
-      { label: 'Avg Pace', value: formatPaceFromSeconds(avgPaceSeconds), unit: '/km' },
-    ]
-  }, [activities])
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: 'Failed to remove activity.' }))
+      throw new Error(payload.error || 'Failed to remove activity.')
+    }
+
+    await loadActivities()
+  }, [loadActivities])
 
   const value = useMemo(() => ({
     activities,
     stats,
+    isLoading,
     isFormOpen,
     formInitialValues,
     openManualForm,
+    openEditForm,
     openManualFormFromAnalysis,
     closeManualForm,
     saveActivity,
-  }), [activities, stats, isFormOpen, formInitialValues, openManualForm, openManualFormFromAnalysis, closeManualForm, saveActivity])
+    deleteActivity,
+  }), [activities, stats, isLoading, isFormOpen, formInitialValues, openManualForm, openEditForm, openManualFormFromAnalysis, closeManualForm, saveActivity, deleteActivity])
 
   return <ActivityLogContext.Provider value={value}>{children}</ActivityLogContext.Provider>
 }

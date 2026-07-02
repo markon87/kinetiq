@@ -55,6 +55,7 @@ function toUiActivity(row) {
     id: row.id,
     type: row.type,
     date: formatDateLabel(row.performed_at),
+    performedAt: row.performed_at,
     distance: Number(row.distance_km).toFixed(1),
     pace: formatPace(row.pace_seconds),
     hr: row.avg_heart_rate,
@@ -97,6 +98,34 @@ async function getAuthedClient() {
   return { supabase, user }
 }
 
+function parseActivityPayload(payload) {
+  const paceSeconds = parsePaceToSeconds(payload.pace)
+  const durationSeconds = parseDurationToSeconds(payload.duration)
+  const distanceKm = Number(payload.distance)
+  const avgHeartRate = Number(payload.hr)
+  const elevationGainM = Number(payload.elevation || 0)
+
+  if (!payload.type || !payload.date || !paceSeconds || !durationSeconds) {
+    return { error: 'Invalid activity payload.' }
+  }
+
+  if (distanceKm <= 0 || avgHeartRate <= 0 || elevationGainM < 0) {
+    return { error: 'Invalid activity metrics.' }
+  }
+
+  return {
+    values: {
+      type: payload.type,
+      performed_at: new Date(payload.date).toISOString(),
+      distance_km: distanceKm,
+      pace_seconds: paceSeconds,
+      avg_heart_rate: avgHeartRate,
+      duration_seconds: durationSeconds,
+      elevation_gain_m: elevationGainM,
+    },
+  }
+}
+
 export async function GET(request) {
   const { supabase, user } = await getAuthedClient()
   if (!user) {
@@ -108,6 +137,7 @@ export async function GET(request) {
   const { data, error } = await supabase
     .from('activities')
     .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, duration_seconds, elevation_gain_m')
+    .is('deleted_at', null)
     .order('performed_at', { ascending: false })
     .limit(Number.isNaN(limit) ? 50 : Math.min(limit, 200))
 
@@ -128,31 +158,16 @@ export async function POST(request) {
   }
 
   const payload = await request.json()
-  const paceSeconds = parsePaceToSeconds(payload.pace)
-  const durationSeconds = parseDurationToSeconds(payload.duration)
-  const distanceKm = Number(payload.distance)
-  const avgHeartRate = Number(payload.hr)
-  const elevationGainM = Number(payload.elevation || 0)
-
-  if (!payload.type || !payload.date || !paceSeconds || !durationSeconds) {
-    return NextResponse.json({ error: 'Invalid activity payload.' }, { status: 400 })
-  }
-
-  if (distanceKm <= 0 || avgHeartRate <= 0 || elevationGainM < 0) {
-    return NextResponse.json({ error: 'Invalid activity metrics.' }, { status: 400 })
+  const parsed = parseActivityPayload(payload)
+  if (parsed.error) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 })
   }
 
   const { data, error } = await supabase
     .from('activities')
     .insert({
       user_id: user.id,
-      type: payload.type,
-      performed_at: new Date(payload.date).toISOString(),
-      distance_km: distanceKm,
-      pace_seconds: paceSeconds,
-      avg_heart_rate: avgHeartRate,
-      duration_seconds: durationSeconds,
-      elevation_gain_m: elevationGainM,
+      ...parsed.values,
       source: payload.source || 'manual',
     })
     .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, duration_seconds, elevation_gain_m')
@@ -163,4 +178,73 @@ export async function POST(request) {
   }
 
   return NextResponse.json({ activity: toUiActivity(data) }, { status: 201 })
+}
+
+export async function PATCH(request) {
+  const { supabase, user } = await getAuthedClient()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const payload = await request.json()
+  if (!payload?.id) {
+    return NextResponse.json({ error: 'Activity id is required.' }, { status: 400 })
+  }
+
+  const parsed = parseActivityPayload(payload)
+  if (parsed.error) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 })
+  }
+
+  const { data, error } = await supabase
+    .from('activities')
+    .update(parsed.values)
+    .eq('id', payload.id)
+    .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, duration_seconds, elevation_gain_m')
+    .maybeSingle()
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to update activity.' }, { status: 500 })
+  }
+
+  if (!data) {
+    return NextResponse.json({ error: 'Activity not found.' }, { status: 404 })
+  }
+
+  return NextResponse.json({ activity: toUiActivity(data) })
+}
+
+export async function DELETE(request) {
+  const { supabase, user } = await getAuthedClient()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const requestUrl = new URL(request.url)
+  const id = requestUrl.searchParams.get('id')
+
+  if (!id) {
+    return NextResponse.json({ error: 'Activity id is required.' }, { status: 400 })
+  }
+
+  const { data, error } = await supabase
+    .from('activities')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('user_id', user.id)
+    .is('deleted_at', null)
+    .select('id')
+    .maybeSingle()
+
+  if (error) {
+    return NextResponse.json({ error: 'Failed to remove activity.' }, { status: 500 })
+  }
+
+  if (!data) {
+    return NextResponse.json({ error: 'Activity not found.' }, { status: 404 })
+  }
+
+  return NextResponse.json({ success: true })
 }
