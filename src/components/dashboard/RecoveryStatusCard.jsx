@@ -7,17 +7,21 @@ import { useDashboardData } from '../../providers/DashboardDataProvider'
 export default function RecoveryStatusCard() {
   const { dashboardData } = useDashboardData()
   const { recovery } = dashboardData
-  const metrics = [
-    { label: 'Sleep',        change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
-    { label: 'HR Stability', change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
-    { label: 'Mileage',      change: `+${recovery.mileageIncrease}%`, color: 'var(--accent-lime)',   dir: '↑', trend: 'Up' },
-  ]
+  const metrics = recovery.metrics || []
+
+  const trendToStyle = {
+    up: { color: 'var(--accent-lime)', icon: '↑' },
+    down: { color: 'var(--status-danger)', icon: '↓' },
+    stable: { color: 'var(--text-secondary)', icon: '→' },
+  }
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5 flex flex-col">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Recovery Status</span>
-        <Info size={13} className="text-[var(--text-muted)]" />
+        <span title="Recovery Status estimates how ready your body is for harder training based on your recent load trend and current weekly stress.">
+          <Info size={13} className="text-[var(--text-muted)]" />
+        </span>
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 flex-1">
@@ -40,14 +44,17 @@ export default function RecoveryStatusCard() {
         </div>
 
         <div className="flex-1 w-full space-y-2.5 sm:space-y-3">
-          {metrics.map(({ label, change, color, dir, trend }) => (
-            <div key={label} className="flex items-center justify-between">
+          {metrics.map(({ label, change, direction, trend }) => {
+            const style = trendToStyle[direction] || trendToStyle.stable
+            return (
+              <div key={label} className="flex items-center justify-between">
               <span className="text-xs sm:text-sm text-[var(--text-secondary)]" style={{ fontFamily: "'Inter', sans-serif" }}>{label}</span>
-              <span className="text-xs sm:text-sm font-semibold" style={{ color }}>
-                {dir} {trend}{change ? ` (${change})` : ''}
+              <span className="text-xs sm:text-sm font-semibold" style={{ color: style.color }}>
+                {style.icon} {trend}{change ? ` (${change})` : ''}
               </span>
-            </div>
-          ))}
+              </div>
+            )
+          })}
         </div>
       </div>
 

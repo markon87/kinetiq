@@ -543,6 +543,9 @@ function computeLoad(activities) {
     .reduce((acc, item) => acc + Number(item.distance_km) * Number(item.avg_heart_rate), 0)
 
   const normalized = Math.max(0, Math.min(1000, Math.round(currentWeekLoad / 12)))
+  const loadChangePct = previousWeekLoad > 0
+    ? Number((((currentWeekLoad - previousWeekLoad) / previousWeekLoad) * 100).toFixed(1))
+    : 0
 
   let trend = 'stable'
   if (previousWeekLoad > 0) {
@@ -553,19 +556,61 @@ function computeLoad(activities) {
 
   return {
     currentWeekLoad,
+    previousWeekLoad,
     normalized,
+    loadChangePct,
     trend,
   }
 }
 
+function toTrend(delta, neutralBand = 1.5) {
+  if (delta > neutralBand) return { direction: 'up', label: 'Up' }
+  if (delta < -neutralBand) return { direction: 'down', label: 'Down' }
+  return { direction: 'stable', label: 'Stable' }
+}
+
+function formatSignedPercentValue(value) {
+  const rounded = Number(value.toFixed(1))
+  if (rounded > 0) return `+${rounded}%`
+  if (rounded < 0) return `${rounded}%`
+  return '0%'
+}
+
 function computeRecovery(loadData) {
   const gaugePercent = Math.max(0.25, Math.min(0.95, 1 - loadData.normalized / 1200))
+  const sleepDelta = Number((-(loadData.loadChangePct * 0.45) - ((loadData.normalized - 700) / 55)).toFixed(1))
+  const hrDelta = Number((-(loadData.loadChangePct * 0.35) - ((loadData.normalized - 650) / 70)).toFixed(1))
+  const sleepTrend = toTrend(sleepDelta, 2)
+  const hrTrend = toTrend(hrDelta, 2)
+  const mileageTrend = toTrend(loadData.loadChangePct, 2)
+
+  const metrics = [
+    {
+      label: 'Sleep',
+      trend: sleepTrend.label,
+      direction: sleepTrend.direction,
+      change: formatSignedPercentValue(sleepDelta),
+    },
+    {
+      label: 'HR Stability',
+      trend: hrTrend.label,
+      direction: hrTrend.direction,
+      change: formatSignedPercentValue(hrDelta),
+    },
+    {
+      label: 'Mileage',
+      trend: mileageTrend.label,
+      direction: mileageTrend.direction,
+      change: formatSignedPercentValue(loadData.loadChangePct),
+    },
+  ]
 
   if (gaugePercent >= 0.72) {
     return {
       status: 'Recovered',
       gaugePercent,
       mileageIncrease: 6,
+      metrics,
       warning: 'Your recent load looks balanced. Maintain current progression.',
     }
   }
@@ -575,6 +620,7 @@ function computeRecovery(loadData) {
       status: 'Moderate Fatigue',
       gaugePercent,
       mileageIncrease: 12,
+      metrics,
       warning: 'Keep quality sessions, but avoid large mileage jumps this week.',
     }
   }
@@ -583,6 +629,7 @@ function computeRecovery(loadData) {
     status: 'High Fatigue',
     gaugePercent,
     mileageIncrease: 18,
+    metrics,
     warning: 'Reduce intensity for 2-3 days and prioritize sleep before hard sessions.',
   }
 }

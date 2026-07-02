@@ -29,6 +29,11 @@ const defaultDashboardData = {
     status: 'Moderate Fatigue',
     gaugePercent: 0.6,
     mileageIncrease: 10,
+    metrics: [
+      { label: 'Sleep', trend: 'Down', direction: 'down', change: '-4%' },
+      { label: 'HR Stability', trend: 'Down', direction: 'down', change: '-3%' },
+      { label: 'Mileage', trend: 'Up', direction: 'up', change: '+8%' },
+    ],
     warning: 'Keep load progression conservative and prioritize sleep quality.',
   },
   insights: [

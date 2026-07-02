@@ -4,9 +4,9 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ReferenceLine
 } from 'recharts'
-import { Info } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useDashboardData } from '../../providers/DashboardDataProvider'
+import InfoTooltip from '../ui/InfoTooltip'
 
 const fmtPace = (v) => {
   if (v == null) return ''
@@ -60,7 +60,7 @@ export default function PaceDevelopmentCard() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">Pace Development</span>
-          <Info size={13} className="text-[var(--text-muted)]" />
+          <InfoTooltip text="Pace Development tracks your easy, threshold, and race paces over time to show how running speed evolves across training zones." />
         </div>
         <select
           value={activeRange}

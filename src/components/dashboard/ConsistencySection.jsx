@@ -22,7 +22,7 @@ export default function ConsistencySection() {
 
   return (
     <section className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5" aria-labelledby="consistency-heading">
-      <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+      <div className="flex flex-col gap-4">
         {/* Heatmap */}
         <div className="shrink-0">
           <div className="flex items-center gap-2 mb-3">
@@ -42,16 +42,16 @@ export default function ConsistencySection() {
               </div>
             ))}
           </div>
-          <div className="flex gap-1 mb-1">
+          <div className="grid grid-cols-7 gap-1 mb-1 w-full">
             {DAYS.map((d, i) => (
-              <div key={i} className="w-5 sm:w-6 text-center text-[10px] text-[var(--text-muted)]">{d}</div>
+              <div key={i} className="text-center text-[10px] text-[var(--text-muted)]">{d}</div>
             ))}
           </div>
           <div className="space-y-1">
             {consistency.grid.map((row, ri) => (
-              <div key={ri} className="flex gap-1">
+              <div key={ri} className="grid grid-cols-7 gap-1 w-full">
                 {row.map((cell, ci) => (
-                  <div key={ci} className={`w-5 sm:w-6 h-3.5 sm:h-4 rounded-sm ${COLOR[cell]}`} />
+                  <div key={ci} className={`h-3.5 sm:h-4 rounded-sm ${COLOR[cell]}`} />
                 ))}
               </div>
             ))}
@@ -59,7 +59,7 @@ export default function ConsistencySection() {
         </div>
 
         {/* Stats */}
-        <div className="flex-1 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 items-start pt-3 border-t border-[var(--border-color)] lg:pt-0 lg:pl-6 lg:border-t-0 lg:border-l">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 items-start pt-3 border-t border-[var(--border-color)]">
           {consistency.stats.map((s) => (
             <div key={s.label}>
               <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1.5 leading-tight">
