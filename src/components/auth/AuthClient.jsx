@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { getSupabaseBrowserClient } from '../../lib/supabase/client'
 
-export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'compact' }) {
+export default function AuthClient({ variant = 'compact' }) {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -36,7 +36,7 @@ export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'c
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
         if (signInError) throw signInError
-        window.location.assign(redirectedFrom)
+        window.location.assign('/dashboard')
       }
     } catch (authError) {
       setError(authError.message || 'Authentication failed.')
@@ -60,7 +60,7 @@ export default function AuthClient({ redirectedFrom = '/dashboard', variant = 'c
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectedFrom)}`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
 
