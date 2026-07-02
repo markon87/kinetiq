@@ -754,6 +754,54 @@ function buildActivityInsights({ activities, loadData, recovery, projected10k, c
     .map((item) => ({ ...item, label: typeStyles[item.type]?.label || typeStyles.info.label }))
 }
 
+function toConfidenceLabel(score) {
+  if (score >= 80) return 'High'
+  if (score >= 60) return 'Moderate'
+  return 'Low'
+}
+
+function parsePersistedAiInsights(analysisRow) {
+  if (!analysisRow) return null
+
+  const extracted = analysisRow.extracted_metrics
+  const rawInsights = Array.isArray(extracted?.insights) ? extracted.insights : []
+  const insights = rawInsights
+    .slice(0, 3)
+    .map((item) => {
+      const type = item?.type === 'success' || item?.type === 'warning' || item?.type === 'info'
+        ? item.type
+        : 'info'
+
+      const score = Number(item?.confidenceScore)
+      const confidenceScore = Number.isFinite(score)
+        ? Math.max(0, Math.min(100, Math.round(score)))
+        : Number(analysisRow.confidence || 60)
+
+      return {
+        type,
+        title: item?.title || 'AI Insight',
+        description: item?.description || 'AI insight generated from your recent activities.',
+        confidence: toConfidenceLabel(confidenceScore),
+        label: typeStyles[type].label,
+      }
+    })
+
+  if (!insights.length) return null
+
+  const weeklyFocus = extracted?.weeklyFocus && typeof extracted.weeklyFocus === 'object'
+    ? {
+      title: extracted.weeklyFocus.title || null,
+      description: extracted.weeklyFocus.description || null,
+    }
+    : null
+
+  return {
+    insights,
+    weeklyFocus,
+    generatedAt: extracted?.generatedAt || analysisRow.created_at || null,
+  }
+}
+
 export async function GET() {
   const supabase = await getSupabaseServerClient()
 
@@ -766,7 +814,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const [{ data: profile }, { data: activities }] = await Promise.all([
+  const [{ data: profile }, { data: activities }, { data: latestAiAnalysis }] = await Promise.all([
     supabase.from('profiles').select('display_name, avatar_url, age, sex, weight_kg').eq('id', user.id).maybeSingle(),
     supabase
       .from('activities')
@@ -775,6 +823,13 @@ export async function GET() {
       .is('deleted_at', null)
       .order('performed_at', { ascending: false })
       .limit(60),
+    supabase
+      .from('uploaded_analyses')
+      .select('confidence, extracted_metrics, created_at')
+      .eq('user_id', user.id)
+      .eq('workout_type', 'Activity AI Summary')
+      .order('created_at', { ascending: false })
+      .limit(1),
   ])
 
   const name = parseDisplayName(profile, user)
@@ -789,7 +844,7 @@ export async function GET() {
   const consistency = buildConsistencyData(safeActivities)
   const vo2max = computeVo2Max(safeActivities, profile)
 
-  const insights = buildActivityInsights({
+  const fallbackInsights = buildActivityInsights({
     activities: safeActivities,
     loadData,
     recovery,
@@ -797,6 +852,17 @@ export async function GET() {
     consistency,
     vo2max,
   })
+  const persistedAi = parsePersistedAiInsights(latestAiAnalysis?.[0])
+  const insights = persistedAi?.insights || fallbackInsights
+  const weeklyFocus = persistedAi?.weeklyFocus?.title && persistedAi?.weeklyFocus?.description
+    ? persistedAi.weeklyFocus
+    : {
+      title: recovery.status === 'Recovered' ? 'Build aerobic volume' : 'Prioritize recovery quality',
+      description:
+        recovery.status === 'Recovered'
+          ? 'Add one controlled quality block and keep easy days easy.'
+          : 'Keep effort mostly easy and protect sleep consistency this week.',
+    }
 
   return NextResponse.json({
     user: {
@@ -820,13 +886,11 @@ export async function GET() {
     },
     recovery,
     insights,
-    weeklyFocus: {
-      title: recovery.status === 'Recovered' ? 'Build aerobic volume' : 'Prioritize recovery quality',
-      description:
-        recovery.status === 'Recovered'
-          ? 'Add one controlled quality block and keep easy days easy.'
-          : 'Keep effort mostly easy and protect sleep consistency this week.',
+    insightsMeta: {
+      source: persistedAi ? 'ai' : 'rules',
+      generatedAt: persistedAi?.generatedAt || null,
     },
+    weeklyFocus,
     recentActivities: safeActivities.slice(0, 5).map(toRecentActivity),
     projected10k,
     paceDevelopment,

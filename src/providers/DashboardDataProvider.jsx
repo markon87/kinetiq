@@ -45,6 +45,10 @@ const defaultDashboardData = {
       label: 'Positive signal',
     },
   ],
+  insightsMeta: {
+    source: 'rules',
+    generatedAt: null,
+  },
   weeklyFocus: {
     title: 'Stay Consistent',
     description: 'Log your sessions regularly to improve insight quality.',

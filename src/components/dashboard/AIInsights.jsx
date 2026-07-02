@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { TrendingUp, AlertCircle, Target, Footprints, ChevronRight } from 'lucide-react'
 import { useDashboardData } from '../../providers/DashboardDataProvider'
 
@@ -10,9 +11,35 @@ const typeStyles = {
 }
 
 export default function AIInsights() {
-  const { dashboardData } = useDashboardData()
+  const { dashboardData, refreshDashboardData } = useDashboardData()
   const insights = dashboardData.insights.map((item) => ({ ...item, ...typeStyles[item.type] }))
+  const insightsMeta = dashboardData.insightsMeta || { source: 'rules', generatedAt: null }
   const { weeklyFocus } = dashboardData
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [refreshError, setRefreshError] = useState(null)
+
+  const handleRefresh = async () => {
+    setRefreshError(null)
+    setIsRefreshing(true)
+
+    try {
+      const response = await fetch('/api/ai-activity-insights', {
+        method: 'POST',
+        credentials: 'include',
+      })
+
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Failed to refresh AI insights.')
+      }
+
+      await refreshDashboardData()
+    } catch (error) {
+      setRefreshError(error.message || 'Failed to refresh AI insights.')
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   return (
     <section aria-labelledby="ai-insights-heading">
@@ -20,12 +47,40 @@ export default function AIInsights() {
         <h2 id="ai-insights-heading" className="text-[11px] sm:text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest">AI Insights</h2>
         <button
           type="button"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
           className="min-h-11 px-2 text-xs text-[var(--text-secondary)] hover:text-[var(--accent-lime)] transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-card)]"
-          aria-label="View all insights"
+          aria-label="Refresh AI insights"
         >
-          View all
+          {isRefreshing ? 'Refreshing…' : 'Refresh AI'}
         </button>
       </div>
+
+      <div className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-wide">
+        <span className={`rounded-full border px-2 py-0.5 font-semibold ${
+          insightsMeta.source === 'ai'
+            ? 'border-[var(--border-lime-tint)] bg-[var(--bg-lime-tint)] text-[var(--accent-lime)]'
+            : 'border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-muted)]'
+        }`}>
+          {insightsMeta.source === 'ai' ? 'Source: AI Model' : 'Source: Rules Fallback'}
+        </span>
+        {insightsMeta.generatedAt ? (
+          <span className="text-[var(--text-muted)]">
+            {new Date(insightsMeta.generatedAt).toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+            })}
+          </span>
+        ) : null}
+      </div>
+
+      {refreshError ? (
+        <p className="mb-2 text-xs text-[var(--status-danger)]" style={{ fontFamily: "'Inter', sans-serif" }}>
+          {refreshError}
+        </p>
+      ) : null}
 
       <div className="space-y-2">
         {insights.map(({ Icon, title, description, confidence, color, bg, border, label }) => (
