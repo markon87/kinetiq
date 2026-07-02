@@ -13,7 +13,7 @@ export default function DashboardPage() {
       <main className="flex-1 p-3 sm:p-4 space-y-4 min-w-0 lg:overflow-y-auto">
         <ProjectedTimeCard />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           <TrainingLoadCard />
           <RecoveryStatusCard />
           <VO2MaxCard />
