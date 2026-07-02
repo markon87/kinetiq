@@ -1,23 +1,9 @@
-const activities = [
-  {
-    type: 'Easy Run',
-    date: 'Yesterday',
-    distance: '10.2 km',
-    pace: '5:24 /km',
-    hr: '138 bpm',
-    emoji: '🏃',
-  },
-  {
-    type: 'Tempo Run',
-    date: 'Jun 7, 2024',
-    distance: '8.1 km',
-    pace: '4:28 /km',
-    hr: '152 bpm',
-    emoji: '🏃',
-  },
-]
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 export default function RecentActivity() {
+  const { dashboardData } = useDashboardData()
+  const activities = dashboardData.recentActivities || []
+
   return (
     <section className="mt-6" aria-labelledby="recent-activity-heading">
       <div className="flex items-center justify-between mb-3">
@@ -32,7 +18,7 @@ export default function RecentActivity() {
       </div>
 
       <div className="space-y-2">
-        {activities.map(a => (
+        {activities.map((a) => (
           <article key={a.type + a.date} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-3.5 flex items-center gap-3" aria-label={`${a.type} on ${a.date}`}>
             <div className="w-9 h-9 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] flex items-center justify-center text-base shrink-0">
               {a.emoji}
@@ -62,6 +48,14 @@ export default function RecentActivity() {
             </div>
           </article>
         ))}
+
+        {activities.length === 0 ? (
+          <article className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-3.5">
+            <p className="text-xs text-[var(--text-secondary)]">
+              No activities logged yet. Add your first activity to populate this feed.
+            </p>
+          </article>
+        ) : null}
       </div>
     </section>
   )

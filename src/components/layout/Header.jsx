@@ -1,11 +1,9 @@
 'use client'
 
 import { Bell, Settings, Sun, Moon, PanelLeft } from 'lucide-react'
-import { dashboardData } from '../../data/mockData'
 import { useTheme } from '../../providers/ThemeProvider'
 import CircleGauge from '../ui/CircleGauge'
-
-const { user, readiness } = dashboardData
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 function ReadinessRing({ score, label }) {
   return (
@@ -48,6 +46,8 @@ function getTimeGreeting() {
 
 export default function Header({ onOpenSidebar }) {
   const { theme, toggleTheme } = useTheme()
+  const { dashboardData } = useDashboardData()
+  const { user, readiness } = dashboardData
   const timeGreeting = getTimeGreeting()
 
   return (

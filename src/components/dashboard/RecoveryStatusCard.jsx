@@ -1,16 +1,16 @@
 import { Info, AlertTriangle } from 'lucide-react'
-import { dashboardData } from '../../data/mockData'
 import CircleGauge from '../ui/CircleGauge'
-
-const { recovery } = dashboardData
-
-const metrics = [
-  { label: 'Sleep',        change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
-  { label: 'HR Stability', change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
-  { label: 'Mileage',      change: `+${recovery.mileageIncrease}%`, color: 'var(--accent-lime)',   dir: '↑', trend: 'Up' },
-]
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 export default function RecoveryStatusCard() {
+  const { dashboardData } = useDashboardData()
+  const { recovery } = dashboardData
+  const metrics = [
+    { label: 'Sleep',        change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
+    { label: 'HR Stability', change: null,                            color: 'var(--status-danger)', dir: '↓', trend: 'Down' },
+    { label: 'Mileage',      change: `+${recovery.mileageIncrease}%`, color: 'var(--accent-lime)',   dir: '↑', trend: 'Up' },
+  ]
+
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5 flex flex-col">
       <div className="flex items-center gap-2 mb-4">

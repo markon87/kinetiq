@@ -7,11 +7,9 @@ import {
   LayoutDashboard, Activity, BarChart2, TrendingUp,
   Heart, Lightbulb, Target, Plus, LogOut
 } from 'lucide-react'
-import { dashboardData } from '../../data/mockData'
 import { useActivityLog } from '../../providers/ActivityLogProvider'
 import { getSupabaseBrowserClient } from '../../lib/supabase/client'
-
-const { user } = dashboardData
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 const navItems = [
   { label: 'Dashboard',  href: '/dashboard',  icon: LayoutDashboard },
@@ -26,6 +24,8 @@ const navItems = [
 export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname()
   const { openManualForm } = useActivityLog()
+  const { dashboardData } = useDashboardData()
+  const user = dashboardData.user
 
   const handleSignOut = async () => {
     const supabase = getSupabaseBrowserClient()

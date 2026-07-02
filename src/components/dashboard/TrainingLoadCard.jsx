@@ -1,10 +1,11 @@
 import { Info } from 'lucide-react'
-import { dashboardData } from '../../data/mockData'
 import CircleGauge from '../ui/CircleGauge'
-
-const { trainingLoad } = dashboardData
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 export default function TrainingLoadCard() {
+  const { dashboardData } = useDashboardData()
+  const { trainingLoad } = dashboardData
+
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5 flex flex-col">
       <div className="flex items-center gap-2 mb-4">

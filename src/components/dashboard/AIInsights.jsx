@@ -1,8 +1,8 @@
 'use client'
 
 import { TrendingUp, AlertCircle, Target, Footprints, ChevronRight } from 'lucide-react'
-import { dashboardData } from '../../data/mockData'
 import { useUploadAnalysis } from '../../providers/UploadAnalysisProvider'
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 const typeStyles = {
   success: { Icon: TrendingUp, color: 'var(--accent-lime)', bg: 'var(--bg-lime-tint)', border: 'var(--border-lime-tint)', label: 'Positive signal' },
@@ -10,11 +10,11 @@ const typeStyles = {
   info:    { Icon: Target,      color: 'var(--accent-cyan)', bg: 'var(--bg-cyan-tint)', border: 'var(--border-cyan-tint)', label: 'Info signal' },
 }
 
-const insights = dashboardData.insights.map(i => ({ ...i, ...typeStyles[i.type] }))
-const { weeklyFocus } = dashboardData
-
 export default function AIInsights() {
   const { analysisResult } = useUploadAnalysis()
+  const { dashboardData } = useDashboardData()
+  const insights = dashboardData.insights.map((item) => ({ ...item, ...typeStyles[item.type] }))
+  const { weeklyFocus } = dashboardData
 
   const latestInsight = analysisResult
     ? {

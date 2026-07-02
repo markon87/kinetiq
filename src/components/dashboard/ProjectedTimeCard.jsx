@@ -6,10 +6,7 @@ import {
 } from 'recharts'
 import { Info } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { dashboardData } from '../../data/mockData'
-
-const { projected10k } = dashboardData
-const data = projected10k.chartData
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 const fmtPace = (v) => {
   if (v == null) return ''
@@ -35,6 +32,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function ProjectedTimeCard() {
   const chartContainerRef = useRef(null)
   const [chartSize, setChartSize] = useState({ width: 0, height: 176 })
+  const { dashboardData } = useDashboardData()
+  const { projected10k } = dashboardData
+  const data = projected10k.chartData
+  const confidenceBars = projected10k.confidence === 'High' ? 3 : projected10k.confidence === 'Moderate' ? 2 : 1
+  const trendPrefix = projected10k.trendDirection === 'down' ? '↓' : projected10k.trendDirection === 'up' ? '↑' : '→'
 
   useEffect(() => {
     const el = chartContainerRef.current
@@ -69,7 +71,7 @@ export default function ProjectedTimeCard() {
           <span className="text-[var(--accent-orange)] font-semibold">{projected10k.confidence}</span>
           <div className="flex gap-0.5 ml-1">
             {[1,2,3].map(i => (
-              <div key={i} className={`h-1.5 w-5 rounded-full ${i <= 2 ? 'bg-[var(--accent-orange)]' : 'bg-[var(--border-color)]'}`} />
+              <div key={i} className={`h-1.5 w-5 rounded-full ${i <= confidenceBars ? 'bg-[var(--accent-orange)]' : 'bg-[var(--border-color)]'}`} />
             ))}
           </div>
         </div>
@@ -91,7 +93,7 @@ export default function ProjectedTimeCard() {
         </div>
         <div className="mb-1">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-lime-tint)] border border-[var(--border-lime-tint)] text-[var(--accent-lime)] text-xs font-semibold">
-            ↑ {projected10k.trend}
+            {trendPrefix} {projected10k.trend}
           </span>
         </div>
       </div>
@@ -124,7 +126,7 @@ export default function ProjectedTimeCard() {
             />
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
-              x="Jun 12"
+              x={projected10k.todayLabel}
               stroke="var(--chart-grid)"
               strokeDasharray="4 4"
               label={{ value: 'Today', fill: 'var(--text-muted)', fontSize: 11, dy: -8 }}

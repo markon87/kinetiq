@@ -6,38 +6,7 @@ import {
 } from 'recharts'
 import { Info } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-
-const allData = {
-  '6 Months': [
-    { month: 'Feb', easy: 5.9,  threshold: 5.1,  race: 4.7  },
-    { month: 'Mar', easy: 5.7,  threshold: 5.0,  race: 4.6  },
-    { month: 'Apr', easy: 5.5,  threshold: 4.9,  race: 4.5  },
-    { month: 'May', easy: 5.3,  threshold: 4.85, race: 4.4  },
-    { month: 'Jun', easy: 5.2,  threshold: 4.8,  race: 4.28 },
-    { month: 'Jul', easy: 5.15, threshold: 4.75, race: 4.2  },
-    { month: 'Aug', easy: 5.1,  threshold: 4.7,  race: 4.1  },
-    { month: 'Sep', easy: 5.0,  threshold: 4.6,  race: 4.0  },
-  ],
-  '3 Months': [
-    { month: 'Apr', easy: 5.5,  threshold: 4.9,  race: 4.5  },
-    { month: 'May', easy: 5.3,  threshold: 4.85, race: 4.4  },
-    { month: 'Jun', easy: 5.2,  threshold: 4.8,  race: 4.28 },
-  ],
-  '12 Months': [
-    { month: 'Oct', easy: 6.2,  threshold: 5.4,  race: 5.0  },
-    { month: 'Nov', easy: 6.0,  threshold: 5.3,  race: 4.9  },
-    { month: 'Dec', easy: 5.8,  threshold: 5.2,  race: 4.8  },
-    { month: 'Jan', easy: 5.7,  threshold: 5.15, race: 4.75 },
-    { month: 'Feb', easy: 5.9,  threshold: 5.1,  race: 4.7  },
-    { month: 'Mar', easy: 5.7,  threshold: 5.0,  race: 4.6  },
-    { month: 'Apr', easy: 5.5,  threshold: 4.9,  race: 4.5  },
-    { month: 'May', easy: 5.3,  threshold: 4.85, race: 4.4  },
-    { month: 'Jun', easy: 5.2,  threshold: 4.8,  race: 4.28 },
-    { month: 'Jul', easy: 5.15, threshold: 4.75, race: 4.2  },
-    { month: 'Aug', easy: 5.1,  threshold: 4.7,  race: 4.1  },
-    { month: 'Sep', easy: 5.0,  threshold: 4.6,  race: 4.0  },
-  ],
-}
+import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 const fmtPace = (v) => {
   if (v == null) return ''
@@ -59,8 +28,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 }
 
 export default function PaceDevelopmentCard() {
+  const { dashboardData } = useDashboardData()
+  const allData = dashboardData.paceDevelopment.ranges
   const [range, setRange] = useState('6 Months')
-  const data = allData[range]
+  const rangeOptions = Object.keys(allData)
+  const activeRange = rangeOptions.includes(range) ? range : rangeOptions[0]
+  const data = allData[activeRange] || []
   const chartContainerRef = useRef(null)
   const [chartSize, setChartSize] = useState({ width: 0, height: 176 })
 
@@ -90,11 +63,11 @@ export default function PaceDevelopmentCard() {
           <Info size={13} className="text-[var(--text-muted)]" />
         </div>
         <select
-          value={range}
+          value={activeRange}
           onChange={e => setRange(e.target.value)}
           className="bg-[var(--border-color)] border border-[var(--border-strong)] text-[var(--text-secondary)] text-xs rounded-lg px-2 py-1 outline-none cursor-pointer"
         >
-          {Object.keys(allData).map(k => <option key={k}>{k}</option>)}
+          {rangeOptions.map(k => <option key={k}>{k}</option>)}
         </select>
       </div>
 
@@ -115,7 +88,7 @@ export default function PaceDevelopmentCard() {
             />
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
-              x="Jun"
+              x={dashboardData.paceDevelopment.todayLabel}
               stroke="var(--chart-grid)" strokeDasharray="4 4"
               label={{ value: 'Today', fill: 'var(--text-muted)', fontSize: 10, dy: -6 }}
             />
