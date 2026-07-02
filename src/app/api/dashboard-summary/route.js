@@ -289,6 +289,167 @@ function buildPaceDevelopmentSeries(activities) {
   }
 }
 
+function formatSignedPercent(delta) {
+  const rounded = Math.round(delta)
+  if (rounded > 0) return `↑ ${rounded}%`
+  if (rounded < 0) return `↓ ${Math.abs(rounded)}%`
+  return '→ 0%'
+}
+
+function formatSignedPaceDelta(deltaSeconds) {
+  const safe = Math.round(Math.abs(deltaSeconds || 0))
+  const mins = Math.floor(safe / 60)
+  const secs = String(safe % 60).padStart(2, '0')
+  const value = `${mins}:${secs}`
+  if (deltaSeconds < 0) return `↓ ${value}`
+  if (deltaSeconds > 0) return `↑ ${value}`
+  return `→ ${value}`
+}
+
+function formatSignedIntDelta(delta) {
+  const rounded = Math.round(delta)
+  if (rounded > 0) return `↑ ${rounded}`
+  if (rounded < 0) return `↓ ${Math.abs(rounded)}`
+  return '→ 0'
+}
+
+function dayKey(dateValue) {
+  const date = new Date(dateValue)
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`
+}
+
+function formatShortDateNoYear(dateValue) {
+  return new Date(dateValue).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+function activitiesInRange(activities, start, end) {
+  return activities.filter((item) => {
+    const ts = new Date(item.performed_at).getTime()
+    return ts >= start && ts < end
+  })
+}
+
+function averagePaceSeconds(activities) {
+  if (!activities.length) return 0
+  const sum = activities.reduce((acc, item) => acc + Number(item.pace_seconds), 0)
+  return Math.round(sum / activities.length)
+}
+
+function sumDistance(activities) {
+  return activities.reduce((acc, item) => acc + Number(item.distance_km), 0)
+}
+
+function sumElevation(activities) {
+  return activities.reduce((acc, item) => acc + Number(item.elevation_gain_m || 0), 0)
+}
+
+function averageHr(activities) {
+  if (!activities.length) return 0
+  return Math.round(activities.reduce((acc, item) => acc + Number(item.avg_heart_rate), 0) / activities.length)
+}
+
+function activityDayLoad(item) {
+  return Number(item.distance_km) * Number(item.avg_heart_rate)
+}
+
+function buildConsistencyData(activities) {
+  const now = new Date()
+  const end = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1)
+  const dayMs = 24 * 60 * 60 * 1000
+
+  const dayLoads = new Map()
+  for (const activity of activities) {
+    const key = dayKey(activity.performed_at)
+    dayLoads.set(key, (dayLoads.get(key) || 0) + activityDayLoad(activity))
+  }
+
+  const rawLoads = []
+  for (let index = 48; index >= 0; index -= 1) {
+    const ts = end - ((index + 1) * dayMs)
+    const key = dayKey(ts)
+    rawLoads.push(dayLoads.get(key) || 0)
+  }
+
+  const maxLoad = Math.max(...rawLoads, 1)
+  const gridFlat = rawLoads.map((load) => {
+    if (load <= 0) return 'low'
+    const ratio = load / maxLoad
+    if (ratio >= 0.62) return 'high'
+    if (ratio >= 0.3) return 'med'
+    return 'low'
+  })
+
+  const grid = []
+  for (let row = 0; row < 7; row += 1) {
+    grid.push(gridFlat.slice(row * 7, (row + 1) * 7))
+  }
+
+  const activeDays = rawLoads.filter((load) => load > 0).length
+  const percentage = Math.round((activeDays / rawLoads.length) * 100)
+
+  const weekMs = 7 * dayMs
+  const currentWeek = activitiesInRange(activities, end - weekMs, end)
+  const previousWeek = activitiesInRange(activities, end - (2 * weekMs), end - weekMs)
+
+  const currentDistance = sumDistance(currentWeek)
+  const previousDistance = sumDistance(previousWeek)
+  const mileageDelta = previousDistance > 0 ? ((currentDistance - previousDistance) / previousDistance) * 100 : 0
+
+  const currentAvgPace = averagePaceSeconds(currentWeek)
+  const previousAvgPace = averagePaceSeconds(previousWeek)
+  const paceDelta = previousAvgPace > 0 ? currentAvgPace - previousAvgPace : 0
+
+  const currentAvgHr = averageHr(currentWeek)
+  const previousAvgHr = averageHr(previousWeek)
+  const hrDelta = previousAvgHr > 0 ? currentAvgHr - previousAvgHr : 0
+
+  const currentElevation = sumElevation(currentWeek)
+  const previousElevation = sumElevation(previousWeek)
+  const elevationDelta = previousElevation > 0 ? ((currentElevation - previousElevation) / previousElevation) * 100 : 0
+
+  const longRun = [...currentWeek].sort((a, b) => Number(b.distance_km) - Number(a.distance_km))[0]
+
+  return {
+    percentage,
+    grid,
+    stats: [
+      {
+        label: 'Weekly Mileage',
+        value: currentDistance.toFixed(1),
+        unit: 'km',
+        change: formatSignedPercent(mileageDelta),
+      },
+      {
+        label: 'Long Run',
+        value: longRun ? Number(longRun.distance_km).toFixed(1) : '0.0',
+        unit: 'km',
+        note: longRun ? formatShortDateNoYear(longRun.performed_at) : 'No run yet',
+      },
+      {
+        label: 'Avg Pace',
+        value: formatTimeFromSeconds(currentAvgPace),
+        unit: '/km',
+        change: formatSignedPaceDelta(paceDelta),
+      },
+      {
+        label: 'Avg HR',
+        value: String(currentAvgHr || 0),
+        unit: 'bpm',
+        change: formatSignedIntDelta(hrDelta),
+      },
+      {
+        label: 'Elevation Gain',
+        value: String(Math.round(currentElevation)),
+        unit: 'm',
+        change: formatSignedPercent(elevationDelta),
+      },
+    ],
+  }
+}
+
 function computeLoad(activities) {
   const now = Date.now()
   const weekMs = 7 * 24 * 60 * 60 * 1000
@@ -400,8 +561,9 @@ export async function GET() {
     supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).maybeSingle(),
     supabase
       .from('activities')
-      .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate')
+      .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate, elevation_gain_m')
       .eq('user_id', user.id)
+      .is('deleted_at', null)
       .order('performed_at', { ascending: false })
       .limit(60),
     supabase
@@ -421,6 +583,7 @@ export async function GET() {
   const readiness = computeReadiness(recovery, loadData.trend)
   const projected10k = buildProjected10kSeries(safeActivities)
   const paceDevelopment = buildPaceDevelopmentSeries(safeActivities)
+  const consistency = buildConsistencyData(safeActivities)
 
   const insights = [...fallbackInsights()]
   const analysis = latestAnalyses?.[0]
@@ -463,5 +626,6 @@ export async function GET() {
     recentActivities: safeActivities.slice(0, 5).map(toRecentActivity),
     projected10k,
     paceDevelopment,
+    consistency,
   })
 }

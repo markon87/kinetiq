@@ -89,6 +89,25 @@ const defaultDashboardData = {
       ],
     },
   },
+  consistency: {
+    percentage: 85,
+    grid: [
+      ['high', 'med', 'high', 'low', 'high', 'low', 'low'],
+      ['med', 'high', 'high', 'med', 'low', 'low', 'low'],
+      ['high', 'high', 'med', 'high', 'low', 'low', 'low'],
+      ['med', 'high', 'high', 'high', 'med', 'low', 'low'],
+      ['high', 'med', 'med', 'high', 'high', 'low', 'low'],
+      ['high', 'high', 'high', 'med', 'high', 'low', 'low'],
+      ['med', 'high', 'high', 'high', 'med', 'low', 'low'],
+    ],
+    stats: [
+      { label: 'Weekly Mileage', value: '64.3', unit: 'km', change: '↑ 12%' },
+      { label: 'Long Run', value: '18.2', unit: 'km', note: 'Sat, Jun 8' },
+      { label: 'Avg Pace', value: '5:02', unit: '/km', change: '↓ 0:06' },
+      { label: 'Avg HR', value: '142', unit: 'bpm', change: '↓ 3' },
+      { label: 'Elevation Gain', value: '620', unit: 'm', change: '↑ 8%' },
+    ],
+  },
 }
 
 const DashboardDataContext = createContext({

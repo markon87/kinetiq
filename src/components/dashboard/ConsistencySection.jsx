@@ -1,28 +1,14 @@
-const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+'use client'
 
-const GRID = [
-  ['high','med','high','low','high','low','low'],
-  ['med','high','high','med','low','low','low'],
-  ['high','high','med','high','low','low','low'],
-  ['med','high','high','high','med','low','low'],
-  ['high','med','med','high','high','low','low'],
-  ['high','high','high','med','high','low','low'],
-  ['med','high','high','high','med','low','low'],
-]
+import { useDashboardData } from '../../providers/DashboardDataProvider'
+
+const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 
 const COLOR = {
   high: 'bg-[var(--accent-lime)]',
   med:  'bg-[var(--bg-lime-med)]',
   low:  'bg-[var(--border-color)]',
 }
-
-const stats = [
-  { label: 'Weekly Mileage',  value: '64.3', unit: 'km',   change: '↑ 12%',  up: true  },
-  { label: 'Long Run',        value: '18.2', unit: 'km',   note: 'Sat, Jun 8'           },
-  { label: 'Avg Pace',        value: '5:02', unit: '/km',  change: '↓ 0:06', up: true  },
-  { label: 'Avg HR',          value: '142',  unit: 'bpm',  change: '↓ 3',    up: true  },
-  { label: 'Elevation Gain',  value: '620',  unit: 'm',    change: '↑ 8%',   up: true  },
-]
 
 const legendItems = [
   { label: 'High', colorClass: COLOR.high },
@@ -31,6 +17,9 @@ const legendItems = [
 ]
 
 export default function ConsistencySection() {
+  const { dashboardData } = useDashboardData()
+  const consistency = dashboardData.consistency
+
   return (
     <section className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4 lg:p-5" aria-labelledby="consistency-heading">
       <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
@@ -42,7 +31,7 @@ export default function ConsistencySection() {
               className="text-base sm:text-sm font-bold text-[var(--accent-lime)]"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              85%
+              {consistency.percentage}%
             </span>
           </div>
           <div className="flex items-center gap-3 mb-3" aria-label="Consistency level legend">
@@ -59,7 +48,7 @@ export default function ConsistencySection() {
             ))}
           </div>
           <div className="space-y-1">
-            {GRID.map((row, ri) => (
+            {consistency.grid.map((row, ri) => (
               <div key={ri} className="flex gap-1">
                 {row.map((cell, ci) => (
                   <div key={ci} className={`w-5 sm:w-6 h-3.5 sm:h-4 rounded-sm ${COLOR[cell]}`} />
@@ -71,7 +60,7 @@ export default function ConsistencySection() {
 
         {/* Stats */}
         <div className="flex-1 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 items-start pt-3 border-t border-[var(--border-color)] lg:pt-0 lg:pl-6 lg:border-t-0 lg:border-l">
-          {stats.map(s => (
+          {consistency.stats.map((s) => (
             <div key={s.label}>
               <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1.5 leading-tight">
                 {s.label}
