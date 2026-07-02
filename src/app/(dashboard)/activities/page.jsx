@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useActivityLog } from '../../../providers/ActivityLogProvider'
 
@@ -11,15 +12,102 @@ const typeColor = {
   'Interval':     { dot: 'var(--status-danger)', bg: 'var(--bg-red-tint)', text: 'var(--status-danger)' },
 }
 
+function parsePaceToSeconds(pace) {
+  const [mins, secs] = String(pace || '').split(':').map((value) => Number.parseInt(value, 10))
+  if (Number.isNaN(mins) || Number.isNaN(secs)) return 0
+  return (mins * 60) + secs
+}
+
+function parseDurationToSeconds(duration) {
+  const parts = String(duration || '').split(':').map((value) => Number.parseInt(value, 10))
+  if (parts.some((value) => Number.isNaN(value))) return 0
+  if (parts.length === 2) return (parts[0] * 60) + parts[1]
+  if (parts.length === 3) return (parts[0] * 3600) + (parts[1] * 60) + parts[2]
+  return 0
+}
+
+function formatPace(paceSeconds) {
+  const mins = Math.floor(paceSeconds / 60)
+  const secs = String(paceSeconds % 60).padStart(2, '0')
+  return `${mins}:${secs}`
+}
+
+function buildStats(activities) {
+  const totalRuns = activities.length
+  const totalDistance = activities.reduce((sum, activity) => sum + Number(activity.distance || 0), 0)
+  const totalDurationSeconds = activities.reduce((sum, activity) => sum + parseDurationToSeconds(activity.duration), 0)
+  const avgPaceSeconds = totalRuns
+    ? Math.round(activities.reduce((sum, activity) => sum + parsePaceToSeconds(activity.pace), 0) / totalRuns)
+    : 0
+
+  const totalHours = Math.floor(totalDurationSeconds / 3600)
+  const totalMinutes = Math.round((totalDurationSeconds % 3600) / 60)
+
+  return [
+    { label: 'Total Runs', value: String(totalRuns), unit: 'logged' },
+    { label: 'Total Distance', value: totalDistance.toFixed(1), unit: 'km' },
+    { label: 'Total Time', value: `${totalHours}h ${totalMinutes}m`, unit: 'total' },
+    { label: 'Avg Pace', value: formatPace(avgPaceSeconds), unit: '/km' },
+  ]
+}
+
 export default function ActivitiesPage() {
   const {
     activities,
-    stats,
     isLoading,
     openManualForm,
     openEditForm,
     deleteActivity,
   } = useActivityLog()
+  const [monthFilter, setMonthFilter] = useState('all')
+  const [typeFilter, setTypeFilter] = useState('all')
+
+  const monthOptions = useMemo(() => {
+    const unique = new Map()
+
+    for (const activity of activities) {
+      const date = new Date(activity.performedAt)
+      if (Number.isNaN(date.getTime())) continue
+
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const key = `${year}-${month}`
+
+      if (!unique.has(key)) {
+        unique.set(key, date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }))
+      }
+    }
+
+    return [...unique.entries()]
+      .sort((a, b) => (a[0] < b[0] ? 1 : -1))
+      .map(([value, label]) => ({ value, label }))
+  }, [activities])
+
+  const typeOptions = useMemo(() => {
+    return [...new Set(activities.map((activity) => activity.type))].sort()
+  }, [activities])
+
+  const activeMonthFilter = monthOptions.some((option) => option.value === monthFilter) ? monthFilter : 'all'
+  const activeTypeFilter = typeOptions.includes(typeFilter) ? typeFilter : 'all'
+
+  const filteredActivities = useMemo(() => {
+    return activities.filter((activity) => {
+      const monthMatches = activeMonthFilter === 'all'
+        ? true
+        : (() => {
+          const date = new Date(activity.performedAt)
+          if (Number.isNaN(date.getTime())) return false
+          const year = date.getFullYear()
+          const month = String(date.getMonth() + 1).padStart(2, '0')
+          return `${year}-${month}` === activeMonthFilter
+        })()
+
+      const typeMatches = activeTypeFilter === 'all' || activity.type === activeTypeFilter
+      return monthMatches && typeMatches
+    })
+  }, [activities, activeMonthFilter, activeTypeFilter])
+
+  const filteredStats = useMemo(() => buildStats(filteredActivities), [filteredActivities])
 
   const handleDelete = async (activityId) => {
     const confirmed = window.confirm('Remove this activity from your log?')
@@ -54,9 +142,39 @@ export default function ActivitiesPage() {
         </button>
       </div>
 
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label className="text-xs text-[var(--text-muted)]">
+          Filter by month
+          <select
+            value={activeMonthFilter}
+            onChange={(event) => setMonthFilter(event.target.value)}
+            className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
+          >
+            <option value="all">All months</option>
+            {monthOptions.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="text-xs text-[var(--text-muted)]">
+          Filter by activity type
+          <select
+            value={activeTypeFilter}
+            onChange={(event) => setTypeFilter(event.target.value)}
+            className="mt-1 w-full min-h-11 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-lime)]"
+          >
+            <option value="all">All activity types</option>
+            {typeOptions.map((type) => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       {/* Summary stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-6">
-        {stats.map(s => (
+        {filteredStats.map(s => (
           <div key={s.label} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
             <div className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-2">{s.label}</div>
             <div className="text-2xl font-bold text-[var(--text-primary)]" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-0.02em' }}>
@@ -78,7 +196,7 @@ export default function ActivitiesPage() {
 
         {/* Rows */}
         <div className="divide-y divide-[var(--border-color)]">
-          {activities.map(a => {
+          {filteredActivities.map(a => {
             const style = typeColor[a.type] ?? typeColor['Easy Run']
             return (
               <div key={a.id} className="hover:bg-[var(--bg-hover)] transition-colors cursor-pointer">
@@ -197,9 +315,11 @@ export default function ActivitiesPage() {
             )
           })}
 
-          {!isLoading && !activities.length ? (
+          {!isLoading && !filteredActivities.length ? (
             <div className="px-4 py-10 text-center text-sm text-[var(--text-muted)]">
-              No activities logged yet. Add your first run to get started.
+              {activities.length
+                ? 'No activities match the selected filters.'
+                : 'No activities logged yet. Add your first run to get started.'}
             </div>
           ) : null}
 
