@@ -1,3 +1,5 @@
+'use client'
+
 import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 export default function RecentActivity() {

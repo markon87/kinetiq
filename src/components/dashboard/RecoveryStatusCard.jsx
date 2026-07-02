@@ -1,3 +1,5 @@
+'use client'
+
 import { Info, AlertTriangle } from 'lucide-react'
 import CircleGauge from '../ui/CircleGauge'
 import { useDashboardData } from '../../providers/DashboardDataProvider'
