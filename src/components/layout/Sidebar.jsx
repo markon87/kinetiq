@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Activity, BarChart2, TrendingUp,
-  Heart, Lightbulb, Target, Plus, LogOut
+  Heart, Lightbulb, Target, Plus, LogOut, User
 } from 'lucide-react'
 import { useActivityLog } from '../../providers/ActivityLogProvider'
 import { getSupabaseBrowserClient } from '../../lib/supabase/client'
@@ -19,6 +19,7 @@ const navItems = [
   { label: 'Health',     href: '/health',     icon: Heart },
   { label: 'Insights',   href: '/insights',   icon: Lightbulb },
   { label: 'Goals',      href: '/goals',      icon: Target },
+  { label: 'Profile',    href: '/profile',    icon: User },
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -112,9 +113,17 @@ export default function Sidebar({ isOpen, onClose }) {
           <span className="md:hidden lg:inline">New Activity</span>
         </button>
         <div className="flex items-center gap-3 px-1 md:justify-center lg:justify-start">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent-lime)] to-[var(--accent-cyan)] flex items-center justify-center text-xs font-bold text-[var(--bg-main)] shrink-0">
-            {user.avatar}
-          </div>
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={`${user.name} profile`}
+              className="w-8 h-8 rounded-full object-cover shrink-0 border border-[var(--border-color)]"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent-lime)] to-[var(--accent-cyan)] flex items-center justify-center text-xs font-bold text-[var(--bg-main)] shrink-0">
+              {user.avatar}
+            </div>
+          )}
           <div className="flex-1 min-w-0 md:hidden lg:block">
             <div className="text-sm font-semibold text-[var(--text-primary)]">{user.name}</div>
             <div className="text-xs text-[var(--accent-lime)]">{user.plan}</div>

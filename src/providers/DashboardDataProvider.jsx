@@ -1,11 +1,12 @@
 'use client'
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 const defaultDashboardData = {
   user: {
     name: 'Athlete',
     avatar: 'A',
+    avatarUrl: null,
     plan: 'Premium',
     aerobicTrend: 'stable',
   },
@@ -93,56 +94,63 @@ const defaultDashboardData = {
 const DashboardDataContext = createContext({
   dashboardData: defaultDashboardData,
   isLoading: true,
+  refreshDashboardData: async () => {},
 })
 
 export function DashboardDataProvider({ children }) {
   const [dashboardData, setDashboardData] = useState(defaultDashboardData)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    let ignore = false
+  const loadSummary = async (ignoreRef = { current: false }) => {
+    setIsLoading(true)
 
-    async function loadSummary() {
-      setIsLoading(true)
+    try {
+      const response = await fetch('/api/dashboard-summary', {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+      })
 
-      try {
-        const response = await fetch('/api/dashboard-summary', {
-          method: 'GET',
-          credentials: 'include',
-          cache: 'no-store',
-        })
+      if (!response.ok) {
+        throw new Error(`Failed to load dashboard summary (${response.status})`)
+      }
 
-        if (!response.ok) {
-          throw new Error(`Failed to load dashboard summary (${response.status})`)
-        }
+      const payload = await response.json()
 
-        const payload = await response.json()
-
-        if (!ignore) {
-          setDashboardData((current) => ({
-            ...current,
-            ...payload,
-          }))
-        }
-      } catch {
-        if (!ignore) {
-          setDashboardData(defaultDashboardData)
-        }
-      } finally {
-        if (!ignore) {
-          setIsLoading(false)
-        }
+      if (!ignoreRef.current) {
+        setDashboardData((current) => ({
+          ...current,
+          ...payload,
+        }))
+      }
+    } catch {
+      if (!ignoreRef.current) {
+        setDashboardData(defaultDashboardData)
+      }
+    } finally {
+      if (!ignoreRef.current) {
+        setIsLoading(false)
       }
     }
+  }
 
-    loadSummary()
+  useEffect(() => {
+    const ignoreRef = { current: false }
+    const timer = setTimeout(() => {
+      loadSummary(ignoreRef)
+    }, 0)
 
     return () => {
-      ignore = true
+      clearTimeout(timer)
+      ignoreRef.current = true
     }
   }, [])
 
-  const value = useMemo(() => ({ dashboardData, isLoading }), [dashboardData, isLoading])
+  const refreshDashboardData = useCallback(async () => {
+    await loadSummary({ current: false })
+  }, [])
+
+  const value = useMemo(() => ({ dashboardData, isLoading, refreshDashboardData }), [dashboardData, isLoading, refreshDashboardData])
 
   return <DashboardDataContext.Provider value={value}>{children}</DashboardDataContext.Provider>
 }

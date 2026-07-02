@@ -397,7 +397,7 @@ export async function GET() {
   }
 
   const [{ data: profile }, { data: activities }, { data: latestAnalyses }] = await Promise.all([
-    supabase.from('profiles').select('display_name').eq('id', user.id).maybeSingle(),
+    supabase.from('profiles').select('display_name, avatar_url').eq('id', user.id).maybeSingle(),
     supabase
       .from('activities')
       .select('id, type, performed_at, distance_km, pace_seconds, avg_heart_rate')
@@ -440,6 +440,7 @@ export async function GET() {
     user: {
       name,
       avatar,
+      avatarUrl: profile?.avatar_url || null,
       plan: 'Premium',
       aerobicTrend: loadData.trend === 'up' ? 'improved' : loadData.trend === 'down' ? 'flattened' : 'stable',
     },
