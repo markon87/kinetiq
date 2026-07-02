@@ -1,7 +1,6 @@
 'use client'
 
 import { TrendingUp, AlertCircle, Target, Footprints, ChevronRight } from 'lucide-react'
-import { useUploadAnalysis } from '../../providers/UploadAnalysisProvider'
 import { useDashboardData } from '../../providers/DashboardDataProvider'
 
 const typeStyles = {
@@ -11,21 +10,9 @@ const typeStyles = {
 }
 
 export default function AIInsights() {
-  const { analysisResult } = useUploadAnalysis()
   const { dashboardData } = useDashboardData()
   const insights = dashboardData.insights.map((item) => ({ ...item, ...typeStyles[item.type] }))
   const { weeklyFocus } = dashboardData
-
-  const latestInsight = analysisResult
-    ? {
-        title: `${analysisResult.workoutType} analyzed`,
-        description: analysisResult.suggestedInsights?.[0] || 'New screenshot analysis is available.',
-        confidence: `${analysisResult.confidence}%`,
-        color: 'var(--accent-cyan)',
-        bg: 'var(--bg-cyan-tint)',
-        border: 'var(--border-cyan-tint)',
-      }
-    : null
 
   return (
     <section aria-labelledby="ai-insights-heading">
@@ -41,33 +28,6 @@ export default function AIInsights() {
       </div>
 
       <div className="space-y-2">
-        {latestInsight ? (
-          <article className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4" aria-label={latestInsight.title}>
-            <div className="flex gap-3">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: latestInsight.bg, border: `1px solid ${latestInsight.border}` }}
-              >
-                <Target size={16} style={{ color: latestInsight.color }} aria-hidden="true" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-[13px] sm:text-sm font-semibold mb-1" style={{ color: latestInsight.color, fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {latestInsight.title}
-                </div>
-                <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  {latestInsight.description}
-                </p>
-                <div className="text-[10px] mt-2 font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                  Source: Screenshot analysis
-                </div>
-                <div className="text-xs mt-2 font-medium" style={{ color: latestInsight.color }}>
-                  Confidence: {latestInsight.confidence}
-                </div>
-              </div>
-            </div>
-          </article>
-        ) : null}
-
         {insights.map(({ Icon, title, description, confidence, color, bg, border, label }) => (
           <article key={title} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-3 sm:p-4" aria-label={title}>
             <div className="flex gap-3">

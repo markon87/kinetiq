@@ -667,6 +667,93 @@ function fallbackInsights() {
   ]
 }
 
+function buildActivityInsights({ activities, loadData, recovery, projected10k, consistency, vo2max }) {
+  const insights = []
+
+  if (activities.length >= 3) {
+    if (loadData.trend === 'up') {
+      insights.push({
+        type: 'success',
+        title: 'Training load progressing',
+        description: 'Your recent weekly load is trending upward in a controlled way. Keep easy days easy to absorb the work.',
+        confidence: 'High',
+      })
+    } else if (loadData.trend === 'down') {
+      insights.push({
+        type: 'warning',
+        title: 'Load dipped this week',
+        description: 'Your weekly load is below the previous block. Add one steady aerobic run to maintain momentum.',
+        confidence: 'Moderate',
+      })
+    } else {
+      insights.push({
+        type: 'info',
+        title: 'Load is stable',
+        description: 'Your recent load is holding steady. Small progressive increases can unlock further gains.',
+        confidence: 'Moderate',
+      })
+    }
+  }
+
+  if (projected10k.trendDirection === 'up') {
+    insights.push({
+      type: 'success',
+      title: 'Projected 10K is improving',
+      description: `Current projection is ${projected10k.projected}. Keep threshold sessions consistent for continued progress.`,
+      confidence: projected10k.confidence,
+    })
+  } else if (projected10k.trendDirection === 'down') {
+    insights.push({
+      type: 'warning',
+      title: 'Projected 10K slowed recently',
+      description: 'Recent pace trend softened. Prioritize recovery and one quality session before increasing volume.',
+      confidence: projected10k.confidence,
+    })
+  }
+
+  if (consistency.percentage >= 75) {
+    insights.push({
+      type: 'success',
+      title: 'Consistency is strong',
+      description: `${consistency.percentage}% recent training consistency is a strong signal for durable performance gains.`,
+      confidence: 'High',
+    })
+  } else {
+    insights.push({
+      type: 'warning',
+      title: 'Consistency needs attention',
+      description: `Consistency is ${consistency.percentage}%. Aim for 3-4 steady sessions per week to rebuild rhythm.`,
+      confidence: 'Moderate',
+    })
+  }
+
+  if (vo2max.value != null) {
+    insights.push({
+      type: vo2max.category === 'High' || vo2max.category === 'Above Average' ? 'success' : 'info',
+      title: `VO2 Max is ${vo2max.category.toLowerCase()}`,
+      description: vo2max.note,
+      confidence: 'Moderate',
+    })
+  }
+
+  if (recovery.status !== 'Recovered') {
+    insights.push({
+      type: 'warning',
+      title: 'Recovery requires focus',
+      description: recovery.warning,
+      confidence: 'High',
+    })
+  }
+
+  if (!insights.length) {
+    insights.push(...fallbackInsights())
+  }
+
+  return insights
+    .slice(0, 3)
+    .map((item) => ({ ...item, label: typeStyles[item.type]?.label || typeStyles.info.label }))
+}
+
 export async function GET() {
   const supabase = await getSupabaseServerClient()
 
@@ -679,7 +766,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const [{ data: profile }, { data: activities }, { data: latestAnalyses }] = await Promise.all([
+  const [{ data: profile }, { data: activities }] = await Promise.all([
     supabase.from('profiles').select('display_name, avatar_url, age, sex, weight_kg').eq('id', user.id).maybeSingle(),
     supabase
       .from('activities')
@@ -688,12 +775,6 @@ export async function GET() {
       .is('deleted_at', null)
       .order('performed_at', { ascending: false })
       .limit(60),
-    supabase
-      .from('uploaded_analyses')
-      .select('confidence, suggested_insights')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1),
   ])
 
   const name = parseDisplayName(profile, user)
@@ -708,19 +789,14 @@ export async function GET() {
   const consistency = buildConsistencyData(safeActivities)
   const vo2max = computeVo2Max(safeActivities, profile)
 
-  const insights = [...fallbackInsights()]
-  const analysis = latestAnalyses?.[0]
-  const analysisInsight = analysis?.suggested_insights?.[0]
-
-  if (analysisInsight) {
-    insights.unshift({
-      type: 'info',
-      title: 'Latest Analysis',
-      description: analysisInsight,
-      confidence: `${analysis.confidence}%`,
-      label: typeStyles.info.label,
-    })
-  }
+  const insights = buildActivityInsights({
+    activities: safeActivities,
+    loadData,
+    recovery,
+    projected10k,
+    consistency,
+    vo2max,
+  })
 
   return NextResponse.json({
     user: {
@@ -743,7 +819,7 @@ export async function GET() {
       max: 1000,
     },
     recovery,
-    insights: insights.slice(0, 3),
+    insights,
     weeklyFocus: {
       title: recovery.status === 'Recovered' ? 'Build aerobic volume' : 'Prioritize recovery quality',
       description:
